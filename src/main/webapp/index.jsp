@@ -44,7 +44,7 @@
             <div class="flex flex-col items-center">
                 <img src="Assets/projects.png" alt="Projects Icon" class="w-16 h-16 mb-4">
                 <span class="font-bold">Proyectos</span>
-                <span>Impulsamos iniciativas a nivel nacional</span>
+                <span>Impulsamos iniciativas a nivel nacionall</span>
             </div>
         </div>
     </div>
