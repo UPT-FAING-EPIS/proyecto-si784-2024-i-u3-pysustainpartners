@@ -1,6 +1,11 @@
-package com.loscuchurrumines.Model;
+package com.loscuchurrumines.model;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private int idUser;
     private String username;
     private String password;
@@ -8,10 +13,16 @@ public class Usuario {
     private boolean estado;
     private int fkCargo;
 
-    public Usuario(){
+    public Usuario() {}
 
-    }
-    public Usuario(int idUser, String username, String password, String email, boolean estado, int fkCargo) {
+    public Usuario(
+        int idUser,
+        String username,
+        String password,
+        String email,
+        boolean estado,
+        int fkCargo
+    ) {
         this.idUser = idUser;
         this.username = username;
         this.password = password;
@@ -23,6 +34,7 @@ public class Usuario {
     public int getIdUser() {
         return idUser;
     }
+
     public void setIdUser(int idUser) {
         this.idUser = idUser;
     }
@@ -30,6 +42,7 @@ public class Usuario {
     public String getUser() {
         return username;
     }
+
     public void setUser(String username) {
         this.username = username;
     }
@@ -37,6 +50,7 @@ public class Usuario {
     public String passwod() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -44,6 +58,7 @@ public class Usuario {
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -51,6 +66,7 @@ public class Usuario {
     public boolean getEstado() {
         return estado;
     }
+
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
@@ -58,8 +74,8 @@ public class Usuario {
     public int getFkCargo() {
         return fkCargo;
     }
+
     public void setFkCargo(int fkCargo) {
         this.fkCargo = fkCargo;
     }
-    
 }

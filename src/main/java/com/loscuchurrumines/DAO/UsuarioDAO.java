@@ -1,173 +1,167 @@
-package com.loscuchurrumines.DAO;
+package com.loscuchurrumines.dao;
 
+import com.loscuchurrumines.config.NeonConnection;
+import com.loscuchurrumines.model.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.loscuchurrumines.Config.NeonConnection;
-import com.loscuchurrumines.Model.Usuario;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UsuarioDAO {
-    public void cambiarContrasena(String email, String password){
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
+
+    private static final String IDUSER = "iduser";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String EMAIL = "email";
+    private static final String ESTADO = "estado";
+    private static final String FKCARGO = "fkcargo";
+
+    private static final Logger LOGGER = Logger.getLogger(
+        UsuarioDAO.class.getName()
+    );
+
+    public void cambiarContrasena(String email, String password) {
         String query = "UPDATE tbusuario SET password = ? WHERE email = ?";
-        try {
-            statement = connection.prepareStatement(query);
+
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setString(1, password);
             statement.setString(2, email);
             statement.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-   
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
-
     }
 
-    public boolean validarCodigo(String codigo, String email){
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
-        ResultSet resultSet;
+    public boolean validarCodigo(String codigo, String email) {
         String query = "SELECT * FROM tbusuario WHERE email = ? AND codigo = ?";
-        try {
-            statement = connection.prepareStatement(query);
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            ResultSet resultSet;
             statement.setString(1, email);
             statement.setString(2, codigo);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-               return true;
+                return true;
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
         return false;
-
     }
 
     public Usuario authenticate(String user, String password) {
-        Connection connection = null;
-        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try {
-            connection = NeonConnection.getConnection();
-            String query = "SELECT * FROM tbusuario WHERE username = ? AND password = ?";
-            statement = connection.prepareStatement(query);
+        String query =
+            "SELECT * FROM tbusuario WHERE username = ? AND password = ?";
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setString(1, user);
             statement.setString(2, password);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Usuario usuario = new Usuario();
-                usuario.setIdUser(resultSet.getInt("iduser"));
-                usuario.setUser(resultSet.getString("username"));
-                usuario.setPassword(resultSet.getString("password"));
-                usuario.setEmail(resultSet.getString("email"));
-                usuario.setEstado(resultSet.getBoolean("estado"));
-                usuario.setFkCargo(resultSet.getInt("fkcargo"));
+
+                usuario.setIdUser(resultSet.getInt(IDUSER));
+                usuario.setUser(resultSet.getString(USERNAME));
+                usuario.setPassword(resultSet.getString(PASSWORD));
+                usuario.setEmail(resultSet.getString(EMAIL));
+                usuario.setEstado(resultSet.getBoolean(ESTADO));
+                usuario.setFkCargo(resultSet.getInt(FKCARGO));
                 return usuario;
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
-                if (statement != null)
-                    statement.close();
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
         return null;
     }
 
-    public boolean actualizarRolUsuario(int userId,int newRole){
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
+    public boolean actualizarRolUsuario(int userId, int newRole) {
         String query = "UPDATE tbusuario SET fkcargo = ? WHERE iduser = ?";
-        try {
-            statement = connection.prepareStatement(query);
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+        ) {
             statement.setInt(1, newRole);
             statement.setInt(2, userId);
             statement.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
+        return false;
     }
+
     public Usuario obtenerUsuario(int idUser) {
         Usuario usuario = new Usuario();
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement = null;
+
         ResultSet resultSet = null;
         String query = "SELECT * FROM tbusuario WHERE iduser = ?";
-        try {
-            statement = connection.prepareStatement(query);
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setInt(1, idUser);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                usuario.setIdUser(resultSet.getInt("iduser"));
-                usuario.setUser(resultSet.getString("username"));
-                usuario.setPassword(resultSet.getString("password"));
-                usuario.setEmail(resultSet.getString("email"));
-                usuario.setEstado(resultSet.getBoolean("estado"));
-                usuario.setFkCargo(resultSet.getInt("fkcargo"));
+                usuario.setIdUser(resultSet.getInt(IDUSER));
+                usuario.setUser(resultSet.getString(USERNAME));
+                usuario.setPassword(resultSet.getString(PASSWORD));
+                usuario.setEmail(resultSet.getString(EMAIL));
+                usuario.setEstado(resultSet.getBoolean(ESTADO));
+                usuario.setFkCargo(resultSet.getInt(FKCARGO));
                 return usuario;
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
-                if (statement != null)
-                    statement.close();
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
-        return null;
+        return usuario;
     }
 
     public List<Usuario> obtenerUsuarios() {
-        List<Usuario> usuarios = new ArrayList<Usuario>();
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
+        List<Usuario> usuarios = new ArrayList<>();
+
         ResultSet resultSet;
         String query = "SELECT * FROM tbusuario";
-        try {
-            statement = connection.prepareStatement(query);
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Usuario usuario = new Usuario();
-                usuario.setIdUser(resultSet.getInt("iduser"));
-                usuario.setUser(resultSet.getString("username"));
-                usuario.setPassword(resultSet.getString("password"));
-                usuario.setEmail(resultSet.getString("email"));
-                usuario.setEstado(resultSet.getBoolean("estado"));
-                usuario.setFkCargo(resultSet.getInt("fkcargo"));
+                usuario.setIdUser(resultSet.getInt(IDUSER));
+                usuario.setUser(resultSet.getString(USERNAME));
+                usuario.setPassword(resultSet.getString(PASSWORD));
+                usuario.setEmail(resultSet.getString(EMAIL));
+                usuario.setEstado(resultSet.getBoolean(ESTADO));
+                usuario.setFkCargo(resultSet.getInt(FKCARGO));
                 usuarios.add(usuario);
             }
             return usuarios;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
-        return null;
+        return usuarios;
     }
 
     public boolean crearUsuario(Usuario usuario) {
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
-        String query = "INSERT INTO tbusuario (username, password, email, estado, fkcargo) VALUES (?,?,?,?,?)";
-        try {
-            statement = connection.prepareStatement(query);
+        String query =
+            "INSERT INTO tbusuario (username, password, email, estado, fkcargo) VALUES (?,?,?,?,?)";
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setString(1, usuario.getUser());
             statement.setString(2, usuario.passwod());
             statement.setString(3, usuario.getEmail());
@@ -176,17 +170,18 @@ public class UsuarioDAO {
             statement.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             return false;
         }
     }
 
     public boolean actualizarUsuario(Usuario usuario) {
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
-        String query = "UPDATE tbusuario SET username = ?, password = ?, email = ?, estado = ?, fkcargo = ? WHERE iduser = ?";
-        try {
-            statement = connection.prepareStatement(query);
+        String query =
+            "UPDATE tbusuario SET username = ?, password = ?, email = ?, estado = ?, fkcargo = ? WHERE iduser = ?";
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setString(1, usuario.getUser());
             statement.setString(2, usuario.passwod());
             statement.setString(3, usuario.getEmail());
@@ -196,39 +191,37 @@ public class UsuarioDAO {
             statement.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             return false;
         }
     }
 
     public List<Usuario> searchUsuarios(String searchTerm) {
         List<Usuario> usuarios = new ArrayList<>();
-        Connection connection = NeonConnection.getConnection();
         String searchWithWildcards = "%" + searchTerm + "%";
-        String sql = "SELECT * FROM tbusuario WHERE username LIKE ? and fkcargo = 1";
-
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        String sql =
+            "SELECT * FROM tbusuario WHERE username LIKE ? and fkcargo = 1";
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
             statement.setString(1, searchWithWildcards);
-            
-
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Usuario usuario = new Usuario();
 
-                usuario.setIdUser(resultSet.getInt("iduser"));
-                usuario.setUser(resultSet.getString("username"));
-                usuario.setPassword(resultSet.getString("password"));
-                usuario.setEmail(resultSet.getString("email"));
-                usuario.setEstado(resultSet.getBoolean("estado"));
-                usuario.setFkCargo(resultSet.getInt("fkcargo"));
+                usuario.setIdUser(resultSet.getInt(IDUSER));
+                usuario.setUser(resultSet.getString(USERNAME));
+                usuario.setPassword(resultSet.getString(PASSWORD));
+                usuario.setEmail(resultSet.getString(EMAIL));
+                usuario.setEstado(resultSet.getBoolean(ESTADO));
+                usuario.setFkCargo(resultSet.getInt(FKCARGO));
                 usuarios.add(usuario);
             }
         } catch (Exception e) {
-
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
-
         return usuarios;
     }
 }
