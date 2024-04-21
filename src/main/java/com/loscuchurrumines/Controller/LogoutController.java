@@ -1,7 +1,8 @@
-package com.loscuchurrumines.Controller;
+package com.loscuchurrumines.controller;
 
 import java.io.IOException;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,10 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/logout")
 public class LogoutController extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
-        
-        request.getSession().invalidate();
-        request.getRequestDispatcher("Views/Login/login.jsp").forward(request, response);
+    @Override
+    protected void doGet(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        try {
+            request.getSession().invalidate();
+            request
+                .getRequestDispatcher("Views/Login/login.jsp")
+                .forward(request, response);
+        } catch (IOException | ServletException e) {
+            Logger.getLogger(LogoutController.class.getName()).log(
+                Level.SEVERE,
+                "Exception caught in doGet method",
+                e
+            );
+        }
     }
-
 }
