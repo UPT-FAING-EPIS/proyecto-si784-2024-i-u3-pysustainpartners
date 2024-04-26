@@ -105,10 +105,10 @@
             <h1 class="text-2xl font-semibold mb-4"><%= proyecto.getNombre() %></h1>
             <% if(proyecto.getFoto() != null) { %>
             <div>
-                <img src="<%= proyecto.getFoto() %>" alt="Imagen del proyecto" class="rounded-lg w-70 h-70 object-auto mb-3">
+                <img src="<%= proyecto.getFoto() %>" alt="fotogeneral" class="rounded-lg w-70 h-70 object-auto mb-3">
             <% } %>
             <p class="mb-4"><%= proyecto.getDescripcion() %></p>
-            
+
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <h2 class="font-semibold text-lime-800">Recaudación</h2>
@@ -118,7 +118,7 @@
                             <div class="bg-blue-600 h-2.5 rounded-full" style="width:<%= (float) montoRecaudado / montoRecaudado *100 %>%"></div>
                             <% } else { %>
                             <div class="bg-red-600 h-2.5 rounded-full" style="width:<%= (float) montoRecaudado / fondoTotal *100 %>%"></div><% } %>
-                        
+
                     </div>
                     <div class="flex justify-between">
                         <span>Recaudado: <%= montoRecaudado %></span>
@@ -146,7 +146,7 @@
                 <button class="text-sm bg-gray-500 text-white px-4  cursor-not-allowed sm:px-6 py-2 rounded-lg " disabled>Participar</button><br>
             <% } %>
             <% if(isAdmin) { %>
-                <form action="proyecto?action=changeStatus" method="post"> 
+                <form action="proyecto?action=changeStatus" method="post">
                     <input type="hidden" name="idProyecto" value="<%= proyecto.getIdProyecto() %>">
                     <input type="hidden" name="newStatus" value="<%= !isProjectActive %>"><br>
                     <button type="submit" class="text-sm bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 mb-6">Cambiar Estado del Proyecto</button>

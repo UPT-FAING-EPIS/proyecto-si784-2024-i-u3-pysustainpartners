@@ -16,9 +16,11 @@
 <body class="bg-black h-screen font-sans relative overflow-hidden">
 
     <h1 class="text-white text-4xl font-bold absolute top-0 left-1/2 transform -translate-x-1/2 mt-20 z-20">Sustain Partners</h1>
-    
+
     <video id="video-background" autoplay muted loop class="absolute top-0 left-0 w-full h-full object-cover z-0 filter blur-sm">
         <source src="Assets/register.mp4" type="video/mp4">
+        <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+        your browser does not support the video tag.
     </video>
 
     <div class="absolute inset-0 bg-black opacity-50 z-5"></div>

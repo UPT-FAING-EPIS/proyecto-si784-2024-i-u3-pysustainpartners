@@ -15,6 +15,8 @@
     <!-- Background Video -->
     <video id="video-background" autoplay muted loop class="absolute top-0 left-0 w-full h-full object-cover z-0 filter blur-sm">
         <source src="Assets/landing.mp4" type="video/mp4">
+        <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+        your browser does not support the video tag.
     </video>
 
     <!-- Black Overlay -->

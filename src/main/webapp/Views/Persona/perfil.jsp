@@ -31,7 +31,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-10">
             <div class="flex items-center space-x-4">
-                <img src="<%= persona.getFotoPersona() %>" class="rounded-full w-10 h-10">
+                <img src="<%= persona.getFotoPersona() %>" class="rounded-full w-10 h-10" alt="">
                 <h1 class="text-xl sm:text-2xl text-gray-800 font-semibold">Perfil de <%= persona.getNombre() %></h1>
             </div>
             <a href="/logout" class="text-xs sm:text-sm font-semibold uppercase leading-snug tracking-wider text-black hover:text-gray-600">Cerrar Sesión</a>
@@ -43,13 +43,13 @@
                 <h2 class="text-lg text-gray-800 font-semibold">Información del Usuario</h2>
 
                 <button class="ml-auto text-xs sm:text-sm bg-green-500 text-white px-2 py-1 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200 transition" onclick="location.href='/persona?action=editarPersona&idPersona=<%=persona.getIdPersona()%>'">Editar Perfil</button>
-                
+
             </div>
                 <p class="text-sm"><%= persona.getNombre() %> <%= persona.getApellido() %></p>
                 <p class="text-sm">Teléfono: <%= persona.getCelular() %></p>
                 <p class="text-sm">Género: <%= persona.getSexo() %></p>
-                
-            
+
+
         </div>
 
         <div class="bg-white shadow rounded-lg p-4 sm:p-6 mb-10">
@@ -61,7 +61,7 @@
                         <li class="text-sm"><%= proyecto.getNombre() %></li>
                     <% } %>
                 </ul>
-                
+
             </div>
         </div>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -73,8 +73,7 @@
         </div>
 
     </div>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6391756482511314"
-     crossorigin="anonymous"></script>
+
 
 </body>
 </html>

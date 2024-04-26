@@ -31,23 +31,24 @@
             return;
         }
         Usuario usuarioActual = (Usuario) session.getAttribute("user");
-        
+
         boolean isAdmin = usuarioActual.getFkCargo()==2;
     %>
-    
+
 
     <div class="container mx-auto px-4 sm:px-10 py-6">
         <!-- Header -->
         <div class="flex justify-between items-center mb-10">
-            <div class="flex items-center space-x-4 cursor-pointer" onclick="location.href='perfil'">
-                <img src="<%= personaActual.getFotoPersona()%>" class="rounded-full w-10 h-10">
-                <div class="hidden sm:block text-black text-sm font-semibold font-['Inter'] uppercase leading-snug tracking-wider">Ver perfil<br/></div>
-</div>
-            
+            <button class="flex items-center space-x-4 cursor-pointer" onclick="location.href='perfil'" role="button">
+                <img alt="personalogeada" src="<%= personaActual.getFotoPersona() %>" class="rounded-full w-10 h-10">
+                <span class="hidden sm:block text-black text-sm font-semibold font-['Inter'] uppercase leading-snug tracking-wider">Ver perfil</span>
+            </button>
+
+
             <button onclick="location.href='logout'" class="w-[129px] h-[27px] text-black text-sm font-semibold font-['Inter'] uppercase leading-snug tracking-wider">Cerrar Sesion</button>
-            
+
         </div>
-        
+
 
         <!-- Title -->
         <div class="text-center mb-10">
@@ -66,7 +67,7 @@ Haz realidad tu proyecto para ayudar a la sociedad
     <div class="relative">
         <input type="text" name="query" class="border rounded-md px-3 py-2 focus:ring focus:ring-green-200 transition w-3/4" placeholder="Buscar proyectos">
         <button type="submit" class="absolute right-2 top-3 text-gray-500">
-            
+
         </button>
     </div>
 </form>
@@ -76,7 +77,7 @@ Haz realidad tu proyecto para ayudar a la sociedad
 <h2 class="text-xl sm:text-2xl font-semibold mb-6 text-gray-800">PROYECTOS</h2>
 
 
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-10 mb-10 relative"> 
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-10 mb-10 relative">
 
 <% for(Proyecto proyecto : proyectos) { %>
 

@@ -1,44 +1,57 @@
-package com.loscuchurrumines.Controller;
+package com.loscuchurrumines.controller;
 
+import com.loscuchurrumines.dao.PersonaDAO;
+import com.loscuchurrumines.dao.ProyectoDAO;
+import com.loscuchurrumines.model.Persona;
+import com.loscuchurrumines.model.Proyecto;
+import com.loscuchurrumines.model.Usuario;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.loscuchurrumines.Model.Persona;
-import com.loscuchurrumines.Model.Proyecto;
-import com.loscuchurrumines.Model.Usuario;
-import com.loscuchurrumines.DAO.ProyectoDAO;
-import com.loscuchurrumines.DAO.PersonaDAO;
 
 @WebServlet("/dashboard")
 public class DashboardController extends HttpServlet {
 
-    private ProyectoDAO proyectoDAO = new ProyectoDAO();
-    private PersonaDAO personaDAO = new PersonaDAO();
+    private static final Logger LOGGER = Logger.getLogger(
+        DashboardController.class.getName()
+    );
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        if (!establecerUsuario(request)) {
-            response.sendRedirect("persona");
-        } else {
-            establecerProyectos(request);
-            request.getRequestDispatcher("Views/Dashboard/dashboard.jsp").forward(request, response);
+    @Override
+    protected void doGet(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        try {
+            if (!establecerUsuario(request)) {
+                response.sendRedirect("persona");
+            } else {
+                establecerProyectos(request);
+                request
+                    .getRequestDispatcher("Views/Dashboard/dashboard.jsp")
+                    .forward(request, response);
+            }
+        } catch (IOException | ServletException e) {
+            LOGGER.log(Level.SEVERE, "Exception caught in doGet method", e);
         }
-
     }
 
     private boolean establecerUsuario(HttpServletRequest request) {
-        Usuario authenticatedUser = (Usuario) request.getSession().getAttribute("user");
-        int idUser = (int) authenticatedUser.getIdUser();
+        PersonaDAO personaDAO = new PersonaDAO();
+        Usuario authenticatedUser = (Usuario) request
+            .getSession()
+            .getAttribute("user");
+        int idUser = authenticatedUser.getIdUser();
 
         Persona persona = personaDAO.obtenerPersona(idUser);
         if (persona != null) {
             request.getSession().setAttribute("persona", persona);
         } else {
-
             return false;
         }
 
@@ -46,6 +59,7 @@ public class DashboardController extends HttpServlet {
     }
 
     private void establecerProyectos(HttpServletRequest request) {
+        ProyectoDAO proyectoDAO = new ProyectoDAO();
         List<Proyecto> proyectos = proyectoDAO.obtenerProyectos();
         request.setAttribute("proyectos", proyectos);
     }

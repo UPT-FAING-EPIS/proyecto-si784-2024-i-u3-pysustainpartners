@@ -8,14 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src='https://www.google.com/recaptcha/api.js'
+    integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"></script>
 </head>
 
 <body class="bg-black h-screen font-sans relative overflow-hidden">
     <h1 class="text-white text-2xl sm:text-3xl md:text-4xl font-bold absolute top-0 left-1/2 transform -translate-x-1/2 mt-10 sm:mt-20 z-20">Sustain Partners</h1>
-    
+
     <video id="video-background" autoplay muted loop class="absolute top-0 left-0 w-full h-full object-cover z-0 filter blur-lg">
         <source src="Assets/login.mp4" type="video/mp4">
+        <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+        your browser does not support the video tag.
     </video>
 
     <div class="absolute inset-0 bg-black opacity-50 z-10"></div>

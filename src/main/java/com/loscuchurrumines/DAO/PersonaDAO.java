@@ -1,5 +1,9 @@
-package com.loscuchurrumines.DAO;
+package com.loscuchurrumines.dao;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loscuchurrumines.config.NeonConnection;
+import com.loscuchurrumines.config.RedisConnection;
+import com.loscuchurrumines.model.Persona;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,23 +13,22 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loscuchurrumines.Config.NeonConnection;
-import com.loscuchurrumines.Config.RedisConnection;
-import com.loscuchurrumines.Model.Persona;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import redis.clients.jedis.Jedis;
 
 public class PersonaDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(
+        PersonaDAO.class.getName()
+    );
+
     private Persona deserializePersona(String personaString) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(personaString, Persona.class);
-            
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             return null;
         }
     }
@@ -34,8 +37,8 @@ public class PersonaDAO {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(persona);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             return null;
         }
     }
@@ -46,15 +49,15 @@ public class PersonaDAO {
         if (jedis.exists(key)) {
             String cachedPersona = jedis.get(key);
             return deserializePersona(cachedPersona);
-            
         }
         Persona persona = new Persona();
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
+
         ResultSet resultSet;
         String query = "SELECT * FROM tbpersona WHERE idpersona = ?";
-        try {
-            statement = connection.prepareStatement(query);
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setInt(1, idPersona);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -63,26 +66,31 @@ public class PersonaDAO {
                 persona.setApellido(resultSet.getString("apellido"));
                 persona.setCelular(resultSet.getString("celular"));
                 persona.setFotoPersona(resultSet.getString("fotopersona"));
-                persona.setFechaNacimiento(resultSet.getString("fechanacimiento"));
+                persona.setFechaNacimiento(
+                    resultSet.getString("fechanacimiento")
+                );
                 persona.setSexo(resultSet.getString("sexo"));
                 persona.setFkUser(resultSet.getInt("fkuser"));
                 jedis.set(key, serializePersona(persona));
                 return persona;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
         return null;
     }
 
     public List<Persona> obtenerPersonas(int idPersona) {
-        List<Persona> personas = new ArrayList<Persona>();
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
+        List<Persona> personas = new ArrayList<>();
+
         ResultSet resultSet;
-        String query = "SELECT * FROM tbpersona where idpersona !=" + idPersona;
-        try {
-            statement = connection.prepareStatement(query);
+        String query =
+            "SELECT idpersona,nombre,apellido,fotopersona,celular,fechanacimiento,sexo,fkuser FROM tbpersona where idpersona != ?";
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, idPersona);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Persona persona = new Persona();
@@ -91,23 +99,24 @@ public class PersonaDAO {
                 persona.setApellido(resultSet.getString("apellido"));
                 persona.setFotoPersona(resultSet.getString("fotopersona"));
                 persona.setCelular(resultSet.getString("celular"));
-                persona.setFechaNacimiento(resultSet.getString("fechanacimiento"));
+                persona.setFechaNacimiento(
+                    resultSet.getString("fechanacimiento")
+                );
                 persona.setSexo(resultSet.getString("sexo"));
                 persona.setFkUser(resultSet.getInt("fkuser"));
                 personas.add(persona);
             }
             return personas;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
-        return null;
+        return personas;
     }
 
-    public boolean crearPersona(Persona persona){
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
-        String query = "INSERT INTO tbpersona (nombre, apellido, celular, fechanacimiento, sexo, fkuser, fotopersona) VALUES (?,?,?,?,?,?,?)";
-        
+    public boolean crearPersona(Persona persona) {
+        String query =
+            "INSERT INTO tbpersona (nombre, apellido, celular, fechanacimiento, sexo, fkuser, fotopersona) VALUES (?,?,?,?,?,?,?)";
+
         LocalDate date = LocalDate.parse(persona.getFechaNacimiento());
         LocalDate now = LocalDate.now();
         Period period = Period.between(date, now);
@@ -115,8 +124,10 @@ public class PersonaDAO {
         if (period.getYears() < 18) {
             return false;
         }
-        try{
-            statement = connection.prepareStatement(query);
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setString(1, persona.getNombre());
             statement.setString(2, persona.getApellido());
             statement.setString(3, persona.getCelular());
@@ -126,23 +137,27 @@ public class PersonaDAO {
             statement.setDate(4, sqlDate);
             statement.setString(5, persona.getSexo());
             statement.setInt(6, persona.getFkUser());
-            statement.setString(7, "https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-humano_157943-15752.jpg");
+            statement.setString(
+                7,
+                "https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-humano_157943-15752.jpg"
+            );
             statement.executeUpdate();
             return true;
-        }catch(Exception ex){
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             return false;
         }
-        
     }
-    public boolean actualizarPersona(Persona persona){
-        Connection connection = NeonConnection.getConnection();
-        PreparedStatement statement;
+
+    public boolean actualizarPersona(Persona persona) {
         Jedis jedis = RedisConnection.getConnection();
         String key = "persona:" + persona.getIdPersona();
-        String query = "UPDATE tbpersona SET nombre = ?, apellido = ?, celular = ?, fechanacimiento = ?, sexo = ? WHERE idpersona = ?";
-        try{
-            statement = connection.prepareStatement(query);
+        String query =
+            "UPDATE tbpersona SET nombre = ?, apellido = ?, celular = ?, fechanacimiento = ?, sexo = ? WHERE idpersona = ?";
+        try (
+            Connection connection = NeonConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)
+        ) {
             statement.setString(1, persona.getNombre());
             statement.setString(2, persona.getApellido());
             statement.setString(3, persona.getCelular());
@@ -154,14 +169,12 @@ public class PersonaDAO {
             statement.setInt(6, persona.getIdPersona());
 
             int affectedRows = statement.executeUpdate();
-            if(affectedRows > 0){
-                if(jedis.exists(key)){
-                    jedis.del(key);
-                }
+            if (affectedRows > 0 && jedis.exists(key)) {
+                jedis.del(key);
             }
             return true;
-        }catch(Exception ex){
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
         return false;
     }

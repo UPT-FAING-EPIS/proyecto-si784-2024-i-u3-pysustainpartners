@@ -1,6 +1,11 @@
-package com.loscuchurrumines.Model;
+package com.loscuchurrumines.model;
 
-public class Proyecto {
+import java.io.Serializable;
+
+public class Proyecto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private int idProyecto;
     private String nombre;
     private String descripcion;
@@ -11,16 +16,22 @@ public class Proyecto {
     private int fkUser;
     private int fkFondo;
 
-    public Proyecto(){
+    public Proyecto() {}
 
-    }
-    public Proyecto(int idProyecto, String nombre, String descripcion, String objetivo, String foto, boolean estado, int fkRegion, int fkUser, int fkFondo) {
+    public Proyecto(
+        int idProyecto,
+        String nombre,
+        String descripcion,
+        String objetivo,
+        int fkRegion,
+        int fkUser,
+        int fkFondo
+    ) {
         this.idProyecto = idProyecto;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.objetivo = objetivo;
-        this.foto = foto;
-        this.estado = estado;
+
         this.fkRegion = fkRegion;
         this.fkUser = fkUser;
         this.fkFondo = fkFondo;
@@ -29,6 +40,7 @@ public class Proyecto {
     public int getIdProyecto() {
         return idProyecto;
     }
+
     public void setIdProyecto(int idProyecto) {
         this.idProyecto = idProyecto;
     }
@@ -36,6 +48,7 @@ public class Proyecto {
     public String getNombre() {
         return nombre;
     }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -43,6 +56,7 @@ public class Proyecto {
     public String getDescripcion() {
         return descripcion;
     }
+
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
@@ -50,6 +64,7 @@ public class Proyecto {
     public String getObjetivo() {
         return objetivo;
     }
+
     public void setObjetivo(String objetivo) {
         this.objetivo = objetivo;
     }
@@ -57,6 +72,7 @@ public class Proyecto {
     public String getFoto() {
         return foto;
     }
+
     public void setFoto(String foto) {
         this.foto = foto;
     }
@@ -64,6 +80,7 @@ public class Proyecto {
     public boolean getEstado() {
         return estado;
     }
+
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
@@ -71,6 +88,7 @@ public class Proyecto {
     public int getFkRegion() {
         return fkRegion;
     }
+
     public void setFkRegion(int fkRegion) {
         this.fkRegion = fkRegion;
     }
@@ -78,6 +96,7 @@ public class Proyecto {
     public int getFkUser() {
         return fkUser;
     }
+
     public void setFkUser(int fkUser) {
         this.fkUser = fkUser;
     }
@@ -85,6 +104,7 @@ public class Proyecto {
     public int getFkFondo() {
         return fkFondo;
     }
+
     public void setFkFondo(int fkFondo) {
         this.fkFondo = fkFondo;
     }
