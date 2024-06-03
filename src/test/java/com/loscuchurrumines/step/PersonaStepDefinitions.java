@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 public class PersonaStepDefinitions {
 
     private static final Logger logger = Logger.getLogger(PersonaStepDefinitions.class.getName());
-
     private Persona persona;
     private PersonaDAO personaDAO = new PersonaDAO();
     private boolean resultado;
