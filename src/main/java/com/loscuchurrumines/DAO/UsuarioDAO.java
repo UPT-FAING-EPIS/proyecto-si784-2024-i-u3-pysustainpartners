@@ -40,7 +40,8 @@ public class UsuarioDAO {
     }
 
     public boolean validarCodigo(String codigo, String email) {
-        String query = "SELECT email,codigo FROM tbusuario WHERE email = ? AND codigo = ?";
+        String query =
+            "SELECT email,codigo FROM tbusuario WHERE email = ? AND codigo = ?";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
@@ -103,10 +104,11 @@ public class UsuarioDAO {
     }
 
     public Usuario obtenerUsuario(int idUser) {
-        Usuario usuario = new Usuario();
+        Usuario usuario = null; // Inicialmente nulo
 
         ResultSet resultSet = null;
-        String query = "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario WHERE iduser = ?";
+        String query =
+            "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario WHERE iduser = ?";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
@@ -114,13 +116,13 @@ public class UsuarioDAO {
             statement.setInt(1, idUser);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
+                usuario = new Usuario();
                 usuario.setIdUser(resultSet.getInt(IDUSER));
                 usuario.setUser(resultSet.getString(USERNAME));
                 usuario.setPassword(resultSet.getString(PASSWORD));
                 usuario.setEmail(resultSet.getString(EMAIL));
                 usuario.setEstado(resultSet.getBoolean(ESTADO));
                 usuario.setFkCargo(resultSet.getInt(FKCARGO));
-                return usuario;
             }
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
@@ -132,7 +134,8 @@ public class UsuarioDAO {
         List<Usuario> usuarios = new ArrayList<>();
 
         ResultSet resultSet;
-        String query = "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario";
+        String query =
+            "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
