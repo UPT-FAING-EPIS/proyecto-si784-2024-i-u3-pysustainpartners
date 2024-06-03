@@ -51,12 +51,13 @@ public class PersonaDAO {
             return deserializePersona(cachedPersona);
         }
         Persona persona = new Persona();
-
         ResultSet resultSet;
-        String query = "SELECT * FROM tbpersona WHERE idpersona = ?";
+        String query = "SELECT idpersona, nombre, apellido, celular, fotopersona, fechanacimiento, sexo, fkuser FROM tbpersona WHERE idpersona = ?";
         try (
+
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
+
         ) {
             statement.setInt(1, idPersona);
             resultSet = statement.executeQuery();

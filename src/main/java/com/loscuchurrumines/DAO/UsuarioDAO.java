@@ -40,7 +40,7 @@ public class UsuarioDAO {
     }
 
     public boolean validarCodigo(String codigo, String email) {
-        String query = "SELECT * FROM tbusuario WHERE email = ? AND codigo = ?";
+        String query = "SELECT email,codigo FROM tbusuario WHERE email = ? AND codigo = ?";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
@@ -61,7 +61,7 @@ public class UsuarioDAO {
     public Usuario authenticate(String user, String password) {
         ResultSet resultSet = null;
         String query =
-            "SELECT * FROM tbusuario WHERE username = ? AND password = ?";
+            "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario WHERE username = ? AND password = ?";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
@@ -106,7 +106,7 @@ public class UsuarioDAO {
         Usuario usuario = new Usuario();
 
         ResultSet resultSet = null;
-        String query = "SELECT * FROM tbusuario WHERE iduser = ?";
+        String query = "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario WHERE iduser = ?";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
@@ -132,7 +132,7 @@ public class UsuarioDAO {
         List<Usuario> usuarios = new ArrayList<>();
 
         ResultSet resultSet;
-        String query = "SELECT * FROM tbusuario";
+        String query = "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
@@ -200,7 +200,7 @@ public class UsuarioDAO {
         List<Usuario> usuarios = new ArrayList<>();
         String searchWithWildcards = "%" + searchTerm + "%";
         String sql =
-            "SELECT * FROM tbusuario WHERE username LIKE ? and fkcargo = 1";
+            "SELECT iduser,username,password,email,estado,fkcargo FROM tbusuario WHERE username LIKE ? and fkcargo = 1";
         try (
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql)
