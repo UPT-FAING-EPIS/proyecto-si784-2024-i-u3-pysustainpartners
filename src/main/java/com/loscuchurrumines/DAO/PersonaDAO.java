@@ -23,7 +23,7 @@ public class PersonaDAO {
         PersonaDAO.class.getName()
     );
 
-    private Persona deserializePersona(String personaString) {
+    public Persona deserializePersona(String personaString) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(personaString, Persona.class);
@@ -33,7 +33,10 @@ public class PersonaDAO {
         }
     }
 
-    private String serializePersona(Persona persona) {
+    public String serializePersona(Persona persona) {
+        if (persona == null) {
+            return null;
+        }
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(persona);
@@ -52,12 +55,11 @@ public class PersonaDAO {
         }
         Persona persona = new Persona();
         ResultSet resultSet;
-        String query = "SELECT idpersona, nombre, apellido, celular, fotopersona, fechanacimiento, sexo, fkuser FROM tbpersona WHERE idpersona = ?";
+        String query =
+            "SELECT idpersona, nombre, apellido, celular, fotopersona, fechanacimiento, sexo, fkuser FROM tbpersona WHERE idpersona = ?";
         try (
-
             Connection connection = NeonConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
-
         ) {
             statement.setInt(1, idPersona);
             resultSet = statement.executeQuery();
