@@ -43,6 +43,17 @@ public class UsuarioDAOTest {
     }
 
     @Test
+    public void testDefaultConstructor() {
+        Usuario dao = new Usuario(1, "test", "test", "test", true, 1);
+        assertEquals(1, dao.getIdUser());
+        assertEquals("test", dao.getUser());
+        assertEquals("test", dao.passwod());
+        assertEquals("test", dao.getEmail());
+        assertTrue(dao.getEstado());
+        assertEquals(1, dao.getFkCargo());
+    } 
+
+    @Test
     public void testCambiarContrasena() throws Exception {
         String email = "test@example.com";
         String password = "newpassword";

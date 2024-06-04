@@ -1,6 +1,9 @@
 package com.loscuchurrumines.dao;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -53,6 +56,19 @@ public class ProyectoDAOTest {
         when(RedisConnection.getConnection()).thenReturn(mockJedis);
         proyectoDAO = new ProyectoDAO();
     }
+
+    @Test
+    public void testProyectoDefaultController(){
+        Proyecto proyecto = new Proyecto(1, "Proyecto Test", "Descripcion Test", "Objetivo Test", 1, 1, 1);
+        assertEquals(1, proyecto.getIdProyecto());
+        assertEquals("Proyecto Test", proyecto.getNombre());
+        assertEquals("Descripcion Test", proyecto.getDescripcion());
+        assertEquals("Objetivo Test", proyecto.getObjetivo());
+        assertEquals(1, proyecto.getFkRegion());
+        assertEquals(1, proyecto.getFkUser());
+        assertEquals(1, proyecto.getFkFondo());
+    }
+
 
     @Test
     public void testObtenerProyectoFromRedis() {

@@ -1,6 +1,9 @@
 package com.loscuchurrumines.dao;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,6 +59,19 @@ public class PersonaDAOTest {
         when(mockConnection.prepareStatement(anyString())).thenReturn(
             mockStatement
         );
+    }
+
+    @Test
+    public void testPersonaDefaultController() {
+        Persona persona = new Persona(1,"Juan","Perez","951231241","2000-01-01","foto.jpg",1);
+
+        assertEquals(1, persona.getIdPersona());
+        assertEquals("Juan", persona.getNombre());
+        assertEquals("Perez", persona.getApellido());
+        assertEquals("951231241", persona.getCelular());
+        assertEquals("2000-01-01", persona.getFechaNacimiento());
+        assertEquals("foto.jpg", persona.getFotoPersona());
+        assertEquals(1, persona.getFkUser());
     }
 
     @Test

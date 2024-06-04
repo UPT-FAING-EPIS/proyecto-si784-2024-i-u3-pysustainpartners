@@ -2,6 +2,9 @@ package com.loscuchurrumines.dao;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.loscuchurrumines.config.NeonConnection;
@@ -48,20 +51,65 @@ public class ParticipanteDAOTest {
         int monto = 100;
 
         when(mockConnection.prepareStatement(anyString())).thenReturn(
-            mockStatement
-        );
+                mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
 
-        //act es decir ejecucion de la prueba
+        // act es decir ejecucion de la prueba
         boolean result = participanteDAO.crearParticipante(participante, monto);
 
-        //assert es decir verificacion de resultados
+        // assert es decir verificacion de resultados
         assertTrue(result);
         verify(mockStatement, times(1)).setInt(1, participante.getFkUser());
         verify(mockStatement, times(1)).setInt(2, participante.getFkRol());
         verify(mockStatement, times(1)).setInt(3, participante.getFkProyecto());
         verify(mockStatement, times(1)).setInt(4, monto);
         verify(mockStatement, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testDefaultConstructor() {
+        Participante participante = new Participante();
+        assertEquals(0, participante.getIdParticipante());
+        assertEquals(0, participante.getFkUser());
+        assertEquals(0, participante.getFkRol());
+        assertEquals(0, participante.getFkProyecto());
+    }
+
+    @Test
+    public void testParameterizedConstructor() {
+        Participante participante = new Participante(1, 2, 3, 4);
+        assertEquals(1, participante.getIdParticipante());
+        assertEquals(2, participante.getFkUser());
+        assertEquals(3, participante.getFkRol());
+        assertEquals(4, participante.getFkProyecto());
+    }
+
+    @Test
+    public void testSetAndGetIdParticipante() {
+        Participante participante = new Participante();
+        participante.setIdParticipante(1);
+        assertEquals(1, participante.getIdParticipante());
+    }
+
+    @Test
+    public void testSetAndGetFkUser() {
+        Participante participante = new Participante();
+        participante.setFkUser(2);
+        assertEquals(2, participante.getFkUser());
+    }
+
+    @Test
+    public void testSetAndGetFkRol() {
+        Participante participante = new Participante();
+        participante.setFkRol(3);
+        assertEquals(3, participante.getFkRol());
+    }
+
+    @Test
+    public void testSetAndGetFkProyecto() {
+        Participante participante = new Participante();
+        participante.setFkProyecto(4);
+        assertEquals(4, participante.getFkProyecto());
     }
 
     @Test
@@ -73,19 +121,17 @@ public class ParticipanteDAOTest {
 
         ParticipanteDAO spyParticipanteDAO = spy(participanteDAO);
         doReturn(true)
-            .when(spyParticipanteDAO)
-            .insertarMetodo(anyString(), eq(participante));
+                .when(spyParticipanteDAO)
+                .insertarMetodo(anyString(), eq(participante));
 
         boolean result = spyParticipanteDAO.crearParticipante(
-            participante,
-            100
-        );
+                participante,
+                100);
 
         assertTrue(result);
         verify(spyParticipanteDAO, times(1)).insertarMetodo(
-            anyString(),
-            eq(participante)
-        );
+                anyString(),
+                eq(participante));
     }
 
     @Test
@@ -97,11 +143,9 @@ public class ParticipanteDAOTest {
         int monto = 100;
 
         when(mockConnection.prepareStatement(anyString())).thenReturn(
-            mockStatement
-        );
+                mockStatement);
         when(mockStatement.executeUpdate()).thenThrow(
-            new RuntimeException("Database error")
-        );
+                new RuntimeException("Database error"));
 
         boolean result = participanteDAO.crearParticipante(participante, monto);
 
@@ -119,8 +163,7 @@ public class ParticipanteDAOTest {
         participante.setFkUser(1);
         participante.setFkRol(2);
         participante.setFkProyecto(1);
-        String query =
-            "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
+        String query = "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
@@ -140,13 +183,11 @@ public class ParticipanteDAOTest {
         participante.setFkUser(1);
         participante.setFkRol(2);
         participante.setFkProyecto(1);
-        String query =
-            "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
+        String query = "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenThrow(
-            new RuntimeException("Database error")
-        );
+                new RuntimeException("Database error"));
 
         boolean result = participanteDAO.insertarMetodo(query, participante);
 
