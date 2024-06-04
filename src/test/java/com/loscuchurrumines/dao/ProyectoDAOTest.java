@@ -513,6 +513,41 @@ public class ProyectoDAOTest {
     }
 
     @Test
+    public void testObtenerParticipacionProyectosNoRegistros()
+        throws Exception {
+        int idUser = 1;
+        String query =
+            "SELECT count(*) as proyectosParticipados FROM tbparticipante where fkuser = ?";
+
+        when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false);
+
+        int result = proyectoDAO.obtenerParticipacionProyectos(idUser);
+
+        assertEquals(0, result);
+        verify(mockStatement, times(1)).setInt(1, idUser);
+        verify(mockStatement, times(1)).executeQuery();
+    }
+
+    @Test
+    public void testGetFondoSinRegistro() throws Exception {
+        int idProyecto = 1;
+        String sql =
+            "SELECT monto FROM tbproyecto INNER JOIN tbfondo on fkfondo = idfondo where idproyecto = ?";
+
+        when(mockConnection.prepareStatement(sql)).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false);
+
+        int result = proyectoDAO.getFondo(idProyecto);
+
+        assertEquals(0, result);
+        verify(mockStatement, times(1)).setInt(1, idProyecto);
+        verify(mockStatement, times(1)).executeQuery();
+    }
+
+    @Test
     public void testObtenerParticipacionProyectosException() throws Exception {
         int idUser = 1;
         String query =
