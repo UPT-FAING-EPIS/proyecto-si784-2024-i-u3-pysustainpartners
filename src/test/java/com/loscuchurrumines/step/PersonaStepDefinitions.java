@@ -1,22 +1,27 @@
 package com.loscuchurrumines.step;
 
+import static org.junit.Assert.*;
+
 import com.loscuchurrumines.dao.PersonaDAO;
 import com.loscuchurrumines.model.Persona;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import static org.junit.Assert.*;
 import java.util.logging.Logger;
 
 public class PersonaStepDefinitions {
 
-    private static final Logger logger = Logger.getLogger(PersonaStepDefinitions.class.getName());
+    private static final Logger logger = Logger.getLogger(
+        PersonaStepDefinitions.class.getName()
+    );
     private Persona persona;
     private PersonaDAO personaDAO = new PersonaDAO();
     private boolean resultado;
 
     @Given("un usuario con los siguientes datos")
-    public void un_usuario_con_los_siguientes_datos(io.cucumber.datatable.DataTable dataTable) {
+    public void un_usuario_con_los_siguientes_datos(
+        io.cucumber.datatable.DataTable dataTable
+    ) {
         logger.info("Executing Given step");
         persona = new Persona();
         persona.setNombre(dataTable.cell(1, 0));

@@ -2,7 +2,6 @@ package com.loscuchurrumines.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loscuchurrumines.config.NeonConnection;
-import com.loscuchurrumines.config.RedisConnection;
 import com.loscuchurrumines.model.Persona;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import redis.clients.jedis.Jedis;
 
 public class PersonaDAO {
 
@@ -23,36 +21,7 @@ public class PersonaDAO {
         PersonaDAO.class.getName()
     );
 
-    public Persona deserializePersona(String personaString) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(personaString, Persona.class);
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, ex.getMessage());
-            return null;
-        }
-    }
-
-    public String serializePersona(Persona persona) {
-        if (persona == null) {
-            return null;
-        }
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(persona);
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, ex.getMessage());
-            return null;
-        }
-    }
-
     public Persona obtenerPersona(int idPersona) {
-        Jedis jedis = RedisConnection.getConnection();
-        String key = "persona:" + idPersona;
-        if (jedis.exists(key)) {
-            String cachedPersona = jedis.get(key);
-            return deserializePersona(cachedPersona);
-        }
         Persona persona = new Persona();
         ResultSet resultSet;
         String query =
@@ -74,7 +43,6 @@ public class PersonaDAO {
                 );
                 persona.setSexo(resultSet.getString("sexo"));
                 persona.setFkUser(resultSet.getInt("fkuser"));
-                jedis.set(key, serializePersona(persona));
                 return persona;
             }
         } catch (Exception ex) {
@@ -153,8 +121,6 @@ public class PersonaDAO {
     }
 
     public boolean actualizarPersona(Persona persona) {
-        Jedis jedis = RedisConnection.getConnection();
-        String key = "persona:" + persona.getIdPersona();
         String query =
             "UPDATE tbpersona SET nombre = ?, apellido = ?, celular = ?, fechanacimiento = ?, sexo = ? WHERE idpersona = ?";
         try (
@@ -172,9 +138,6 @@ public class PersonaDAO {
             statement.setInt(6, persona.getIdPersona());
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows > 0 && jedis.exists(key)) {
-                jedis.del(key);
-            }
             return true;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());

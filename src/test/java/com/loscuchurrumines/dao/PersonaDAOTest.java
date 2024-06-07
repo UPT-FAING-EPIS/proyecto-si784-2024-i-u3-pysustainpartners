@@ -8,7 +8,6 @@ import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loscuchurrumines.config.NeonConnection;
-import com.loscuchurrumines.config.RedisConnection;
 import com.loscuchurrumines.model.Persona;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,10 +25,9 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import redis.clients.jedis.Jedis;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ NeonConnection.class, RedisConnection.class })
+@PrepareForTest({ NeonConnection.class })
 public class PersonaDAOTest {
 
     @Mock
@@ -41,18 +39,13 @@ public class PersonaDAOTest {
     @Mock
     private ResultSet mockResultSet;
 
-    @Mock
-    private Jedis mockJedis;
-
     private PersonaDAO personaDAO;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         PowerMockito.mockStatic(NeonConnection.class);
-        PowerMockito.mockStatic(RedisConnection.class);
         when(NeonConnection.getConnection()).thenReturn(mockConnection);
-        when(RedisConnection.getConnection()).thenReturn(mockJedis);
 
         personaDAO = new PersonaDAO();
 
@@ -63,7 +56,15 @@ public class PersonaDAOTest {
 
     @Test
     public void testPersonaDefaultController() {
-        Persona persona = new Persona(1,"Juan","Perez","951231241","2000-01-01","foto.jpg",1);
+        Persona persona = new Persona(
+            1,
+            "Juan",
+            "Perez",
+            "951231241",
+            "2000-01-01",
+            "foto.jpg",
+            1
+        );
 
         assertEquals(1, persona.getIdPersona());
         assertEquals("Juan", persona.getNombre());
@@ -72,25 +73,6 @@ public class PersonaDAOTest {
         assertEquals("2000-01-01", persona.getFechaNacimiento());
         assertEquals("foto.jpg", persona.getFotoPersona());
         assertEquals(1, persona.getFkUser());
-    }
-
-    @Test
-    public void testObtenerPersonaDesdeCacheFalla() throws Exception {
-        when(mockJedis.exists("persona:1")).thenReturn(true);
-        when(mockJedis.get("persona:1")).thenThrow(
-            new RuntimeException("Cache error")
-        );
-
-        Persona result = null;
-        try {
-            result = personaDAO.obtenerPersona(1);
-        } catch (RuntimeException e) {
-            // Manejo de la excepción esperada
-            assertEquals("Cache error", e.getMessage());
-        }
-
-        assertNull(result);
-        verify(mockJedis, times(1)).get("persona:1");
     }
 
     @Test
@@ -110,7 +92,6 @@ public class PersonaDAOTest {
 
     @Test
     public void testObtenerPersonaDesdeDB() throws Exception {
-        when(mockJedis.exists("persona:1")).thenReturn(false);
         when(mockConnection.prepareStatement(anyString())).thenReturn(
             mockStatement
         );
@@ -133,12 +114,10 @@ public class PersonaDAOTest {
         assertEquals("Juan", result.getNombre());
         verify(mockStatement, times(1)).setInt(1, 1);
         verify(mockStatement, times(1)).executeQuery();
-        verify(mockJedis, times(1)).set(anyString(), anyString());
     }
 
     @Test
     public void testObtenerPersonaDesdeDBFalla() throws Exception {
-        when(mockJedis.exists("persona:1")).thenReturn(false);
         when(mockConnection.prepareStatement(anyString())).thenReturn(
             mockStatement
         );
@@ -280,7 +259,6 @@ public class PersonaDAOTest {
         persona.setSexo("M");
 
         when(mockStatement.executeUpdate()).thenReturn(1);
-        when(mockJedis.exists("persona:1")).thenReturn(true);
 
         boolean result = personaDAO.actualizarPersona(persona);
 
@@ -295,7 +273,6 @@ public class PersonaDAOTest {
         verify(mockStatement, times(1)).setString(5, "M");
         verify(mockStatement, times(1)).setInt(6, 1);
         verify(mockStatement, times(1)).executeUpdate();
-        verify(mockJedis, times(1)).del("persona:1");
     }
 
     @Test
@@ -325,24 +302,5 @@ public class PersonaDAOTest {
         verify(mockStatement, times(1)).setString(5, "M");
         verify(mockStatement, times(1)).setInt(6, 1);
         verify(mockStatement, times(1)).executeUpdate();
-    }
-
-    @Test
-    public void testDeserializarPersonaFalla() {
-        String invalidJson = "invalid json";
-
-        Persona result = personaDAO.deserializePersona(invalidJson);
-
-        assertNull(result);
-    }
-
-    @Test
-    public void testSerializarPersonaFalla() {
-        Persona invalidPersona = null;
-
-        String result = personaDAO.serializePersona(invalidPersona);
-
-        //expect result to be <null>
-        assertNull(result);
     }
 }

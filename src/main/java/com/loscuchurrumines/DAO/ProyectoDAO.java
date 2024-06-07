@@ -3,7 +3,6 @@ package com.loscuchurrumines.dao;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loscuchurrumines.config.NeonConnection;
-import com.loscuchurrumines.config.RedisConnection;
 import com.loscuchurrumines.model.Proyecto;
 import java.sql.Array;
 import java.sql.Connection;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import redis.clients.jedis.Jedis;
 
 public class ProyectoDAO {
 
@@ -35,14 +33,6 @@ public class ProyectoDAO {
     );
 
     public Proyecto obtenerProyecto(int idProyecto) {
-        Jedis jedis = RedisConnection.getConnection();
-        String key = "proyecto:" + idProyecto;
-
-        if (jedis.exists(key)) {
-            String cachedProyecto = jedis.get(key);
-            return deserializeProyecto(cachedProyecto);
-        }
-
         Proyecto proyecto = new Proyecto();
 
         ResultSet resultSet;
@@ -66,33 +56,12 @@ public class ProyectoDAO {
                 proyecto.setFkUser(resultSet.getInt(FKUSER));
                 proyecto.setFkFondo(resultSet.getInt(FKFONDO));
 
-                jedis.set(key, serializeProyecto(proyecto));
                 return proyecto;
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
         return null;
-    }
-
-    private Proyecto deserializeProyecto(String proyectoString) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(proyectoString, Proyecto.class);
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, ex.getMessage());
-            return null;
-        }
-    }
-
-    private String serializeProyecto(Proyecto proyecto) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(proyecto);
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, ex.getMessage());
-            return null;
-        }
     }
 
     public int obtenerParticipacionProyectos(int idUser) {
@@ -172,17 +141,6 @@ public class ProyectoDAO {
     }
 
     public int[] obtenerNumeroDonadoresVoluntarios(int idProyecto) {
-        Jedis jedis = RedisConnection.getConnection();
-        String key = "donadoresVoluntarios:" + idProyecto;
-        ObjectMapper mapper = new ObjectMapper();
-        if (jedis.exists(key)) {
-            String cachedResultados = jedis.get(key);
-            try {
-                return mapper.readValue(cachedResultados, int[].class);
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage());
-            }
-        }
         String query =
             "SELECT fkrol, COUNT(*) as cantidad FROM tbparticipante WHERE fkproyecto = ? AND (fkrol = 1 OR fkrol = 2) GROUP BY fkrol";
 
@@ -201,8 +159,6 @@ public class ProyectoDAO {
                     resultados[1] = resultSet.getInt("cantidad");
                 }
             }
-            String serializedResultados = mapper.writeValueAsString(resultados);
-            jedis.set(key, serializedResultados);
 
             return resultados;
         } catch (Exception e) {
@@ -312,21 +268,6 @@ public class ProyectoDAO {
     }
 
     public List<Integer> obtenerCategoriasProyecto(int idProyecto) {
-        Jedis jedis = RedisConnection.getConnection();
-        String key = "categoriasProyecto:" + idProyecto;
-        ObjectMapper mapper = new ObjectMapper();
-
-        if (jedis.exists(key)) {
-            String cachedCategorias = jedis.get(key);
-            try {
-                return mapper.readValue(
-                    cachedCategorias,
-                    new TypeReference<List<Integer>>() {}
-                );
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getMessage());
-            }
-        }
         String query =
             "SELECT fkcategoria FROM tbproyecto_categoria WHERE fkproyecto = ?";
         List<Integer> resultados = new ArrayList<>();
@@ -340,9 +281,6 @@ public class ProyectoDAO {
             while (resultSet.next()) {
                 resultados.add(resultSet.getInt("fkcategoria"));
             }
-
-            String serializedResultados = mapper.writeValueAsString(resultados);
-            jedis.set(key, serializedResultados);
 
             return resultados;
         } catch (Exception e) {

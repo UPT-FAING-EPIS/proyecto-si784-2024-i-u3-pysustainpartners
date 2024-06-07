@@ -14,7 +14,7 @@ public class NeonConnection {
         "DATABASE_PASSWORD"
     );
 
-    private NeonConnection() {
+    public NeonConnection() {
         throw new IllegalStateException("Utility class");
     }
 

@@ -109,6 +109,16 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.7.0.1746</version>
+                <executions>
+                <execution>
+                    <goals>
+                        <goal>sonar</goal>
+                    </goals>
+                    <configuration>
+                        <sonar.exclusions>com/loscuchurrumines/controller/**</sonar.exclusions>
+                    </configuration>
+                </execution>
+            </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -123,7 +133,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
-                    
+
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>

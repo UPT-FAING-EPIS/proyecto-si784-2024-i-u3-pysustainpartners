@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.loscuchurrumines.config.NeonConnection;
+import com.loscuchurrumines.dao.ParticipanteDAO;
 import com.loscuchurrumines.model.Participante;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

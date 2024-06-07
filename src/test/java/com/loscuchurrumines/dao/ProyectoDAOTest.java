@@ -9,7 +9,6 @@ import static org.mockito.Mockito.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loscuchurrumines.config.NeonConnection;
-import com.loscuchurrumines.config.RedisConnection;
 import com.loscuchurrumines.model.Proyecto;
 import java.sql.Array;
 import java.sql.Connection;
@@ -27,10 +26,9 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import redis.clients.jedis.Jedis;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ NeonConnection.class, RedisConnection.class })
+@PrepareForTest({ NeonConnection.class })
 public class ProyectoDAOTest {
 
     @Mock
@@ -42,24 +40,27 @@ public class ProyectoDAOTest {
     @Mock
     private ResultSet mockResultSet;
 
-    @Mock
-    private Jedis mockJedis;
-
     private ProyectoDAO proyectoDAO;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         PowerMockito.mockStatic(NeonConnection.class);
-        PowerMockito.mockStatic(RedisConnection.class);
         when(NeonConnection.getConnection()).thenReturn(mockConnection);
-        when(RedisConnection.getConnection()).thenReturn(mockJedis);
         proyectoDAO = new ProyectoDAO();
     }
 
     @Test
-    public void testProyectoDefaultController(){
-        Proyecto proyecto = new Proyecto(1, "Proyecto Test", "Descripcion Test", "Objetivo Test", 1, 1, 1);
+    public void testProyectoDefaultController() {
+        Proyecto proyecto = new Proyecto(
+            1,
+            "Proyecto Test",
+            "Descripcion Test",
+            "Objetivo Test",
+            1,
+            1,
+            1
+        );
         assertEquals(1, proyecto.getIdProyecto());
         assertEquals("Proyecto Test", proyecto.getNombre());
         assertEquals("Descripcion Test", proyecto.getDescripcion());
@@ -69,26 +70,6 @@ public class ProyectoDAOTest {
         assertEquals(1, proyecto.getFkFondo());
     }
 
-
-    @Test
-    public void testObtenerProyectoFromRedis() {
-        int idProyecto = 1;
-        String key = "proyecto:" + idProyecto;
-        String cachedProyecto =
-            "{\"idProyecto\":1,\"nombre\":\"Proyecto Test\"}";
-
-        when(mockJedis.exists(key)).thenReturn(true);
-        when(mockJedis.get(key)).thenReturn(cachedProyecto);
-
-        Proyecto proyecto = proyectoDAO.obtenerProyecto(idProyecto);
-
-        assertNotNull(proyecto);
-        assertEquals(1, proyecto.getIdProyecto());
-        assertEquals("Proyecto Test", proyecto.getNombre());
-        verify(mockJedis, times(1)).exists(key);
-        verify(mockJedis, times(1)).get(key);
-    }
-
     @Test
     public void testObtenerProyectoFromDatabase() throws Exception {
         int idProyecto = 1;
@@ -96,7 +77,6 @@ public class ProyectoDAOTest {
             "SELECT idproyecto,nombre,descripcion,objetivo,foto,estado,fkregion,fkuser,fkfondo FROM tbproyecto WHERE idproyecto = ?";
         String key = "proyecto:" + idProyecto;
 
-        when(mockJedis.exists(key)).thenReturn(false);
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(true);
@@ -110,7 +90,6 @@ public class ProyectoDAOTest {
         assertEquals("Proyecto Test", proyecto.getNombre());
         verify(mockStatement, times(1)).setInt(1, idProyecto);
         verify(mockStatement, times(1)).executeQuery();
-        verify(mockJedis, times(1)).set(eq(key), anyString());
     }
 
     @Test
@@ -190,27 +169,6 @@ public class ProyectoDAOTest {
     }
 
     @Test
-    public void testObtenerNumeroDonadoresVoluntariosFromRedis()
-        throws Exception {
-        int idProyecto = 1;
-        String key = "donadoresVoluntarios:" + idProyecto;
-        String cachedResultados = "[10, 20]";
-
-        when(mockJedis.exists(key)).thenReturn(true);
-        when(mockJedis.get(key)).thenReturn(cachedResultados);
-
-        int[] resultados = proyectoDAO.obtenerNumeroDonadoresVoluntarios(
-            idProyecto
-        );
-
-        assertNotNull(resultados);
-        assertEquals(10, resultados[0]);
-        assertEquals(20, resultados[1]);
-        verify(mockJedis, times(1)).exists(key);
-        verify(mockJedis, times(1)).get(key);
-    }
-
-    @Test
     public void testObtenerNumeroDonadoresVoluntariosFromDatabase()
         throws Exception {
         int idProyecto = 1;
@@ -218,7 +176,6 @@ public class ProyectoDAOTest {
             "SELECT fkrol, COUNT(*) as cantidad FROM tbparticipante WHERE fkproyecto = ? AND (fkrol = 1 OR fkrol = 2) GROUP BY fkrol";
         String key = "donadoresVoluntarios:" + idProyecto;
 
-        when(mockJedis.exists(key)).thenReturn(false);
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next())
@@ -237,8 +194,15 @@ public class ProyectoDAOTest {
         assertEquals(20, resultados[1]);
         verify(mockStatement, times(1)).setInt(1, idProyecto);
         verify(mockStatement, times(1)).executeQuery();
-        verify(mockJedis, times(1)).set(eq(key), anyString());
     }
+
+    @Test
+    public void testGetEstadoProyecto(){
+        Proyecto proyecto = new Proyecto();
+        proyecto.setEstado(true);
+        assertEquals(true, proyecto.getEstado());
+    }
+
 
     @Test
     public void testObtenerProyectos() throws Exception {
@@ -349,35 +313,12 @@ public class ProyectoDAOTest {
     }
 
     @Test
-    public void testObtenerCategoriasProyectoFromRedis() throws Exception {
-        int idProyecto = 1;
-        String key = "categoriasProyecto:" + idProyecto;
-        String cachedCategorias = "[1, 2, 3]";
-
-        when(mockJedis.exists(key)).thenReturn(true);
-        when(mockJedis.get(key)).thenReturn(cachedCategorias);
-
-        List<Integer> categorias = proyectoDAO.obtenerCategoriasProyecto(
-            idProyecto
-        );
-
-        assertNotNull(categorias);
-        assertEquals(3, categorias.size());
-        assertEquals(Integer.valueOf(1), categorias.get(0));
-        assertEquals(Integer.valueOf(2), categorias.get(1));
-        assertEquals(Integer.valueOf(3), categorias.get(2));
-        verify(mockJedis, times(1)).exists(key);
-        verify(mockJedis, times(1)).get(key);
-    }
-
-    @Test
     public void testObtenerCategoriasProyectoFromDatabase() throws Exception {
         int idProyecto = 1;
         String query =
             "SELECT fkcategoria FROM tbproyecto_categoria WHERE fkproyecto = ?";
         String key = "categoriasProyecto:" + idProyecto;
 
-        when(mockJedis.exists(key)).thenReturn(false);
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next())
@@ -396,7 +337,6 @@ public class ProyectoDAOTest {
         assertEquals(Integer.valueOf(2), categorias.get(1));
         verify(mockStatement, times(1)).setInt(1, idProyecto);
         verify(mockStatement, times(1)).executeQuery();
-        verify(mockJedis, times(1)).set(eq(key), anyString());
     }
 
     @Test
@@ -499,7 +439,6 @@ public class ProyectoDAOTest {
             "SELECT idproyecto,nombre,descripcion,objetivo,foto,estado,fkregion,fkuser,fkfondo FROM tbproyecto WHERE idproyecto = ?";
         String key = "proyecto:" + idProyecto;
 
-        when(mockJedis.exists(key)).thenReturn(false);
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenThrow(
             new SQLException("Database error")
