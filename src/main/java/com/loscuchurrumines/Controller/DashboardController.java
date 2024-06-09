@@ -23,10 +23,8 @@ public class DashboardController extends HttpServlet {
     );
 
     @Override
-    protected void doGet(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
         try {
             if (!establecerUsuario(request)) {
                 response.sendRedirect("persona");
@@ -42,7 +40,7 @@ public class DashboardController extends HttpServlet {
     }
 
     private boolean establecerUsuario(HttpServletRequest request) {
-        PersonaDAO personaDAO = new PersonaDAO();
+        PersonaDAO personaDAO = getPersonaDAO();
         Usuario authenticatedUser = (Usuario) request
             .getSession()
             .getAttribute("user");
@@ -59,8 +57,17 @@ public class DashboardController extends HttpServlet {
     }
 
     private void establecerProyectos(HttpServletRequest request) {
-        ProyectoDAO proyectoDAO = new ProyectoDAO();
+        ProyectoDAO proyectoDAO = getProyectoDAO();
         List<Proyecto> proyectos = proyectoDAO.obtenerProyectos();
         request.setAttribute("proyectos", proyectos);
+    }
+
+    // Métodos que se pueden sobrescribir en las pruebas
+    protected PersonaDAO getPersonaDAO() {
+        return new PersonaDAO();
+    }
+
+    protected ProyectoDAO getProyectoDAO() {
+        return new ProyectoDAO();
     }
 }

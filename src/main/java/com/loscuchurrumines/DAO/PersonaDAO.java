@@ -1,6 +1,5 @@
 package com.loscuchurrumines.dao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loscuchurrumines.config.NeonConnection;
 import com.loscuchurrumines.model.Persona;
 import java.sql.Connection;
@@ -136,8 +135,7 @@ public class PersonaDAO {
             statement.setDate(4, sqlDate);
             statement.setString(5, persona.getSexo());
             statement.setInt(6, persona.getIdPersona());
-
-            int affectedRows = statement.executeUpdate();
+            statement.executeUpdate();
             return true;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());

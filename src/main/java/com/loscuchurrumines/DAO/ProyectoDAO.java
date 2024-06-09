@@ -1,7 +1,5 @@
 package com.loscuchurrumines.dao;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loscuchurrumines.config.NeonConnection;
 import com.loscuchurrumines.model.Proyecto;
 import java.sql.Array;
