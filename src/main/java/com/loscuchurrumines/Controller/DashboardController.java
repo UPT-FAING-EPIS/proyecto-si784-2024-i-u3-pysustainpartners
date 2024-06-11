@@ -18,21 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/dashboard")
 public class DashboardController extends HttpServlet {
 
-    private static final Logger LOGGER = Logger.getLogger(
-        DashboardController.class.getName()
-    );
+    private static final Logger LOGGER = Logger.getLogger(DashboardController.class.getName());
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             if (!establecerUsuario(request)) {
                 response.sendRedirect("persona");
             } else {
                 establecerProyectos(request);
-                request
-                    .getRequestDispatcher("Views/Dashboard/dashboard.jsp")
-                    .forward(request, response);
+                request.getRequestDispatcher("Views/Dashboard/dashboard.jsp").forward(request, response);
             }
         } catch (IOException | ServletException e) {
             LOGGER.log(Level.SEVERE, "Exception caught in doGet method", e);
@@ -41,19 +36,16 @@ public class DashboardController extends HttpServlet {
 
     private boolean establecerUsuario(HttpServletRequest request) {
         PersonaDAO personaDAO = getPersonaDAO();
-        Usuario authenticatedUser = (Usuario) request
-            .getSession()
-            .getAttribute("user");
+        Usuario authenticatedUser = (Usuario) request.getSession().getAttribute("user");
         int idUser = authenticatedUser.getIdUser();
 
         Persona persona = personaDAO.obtenerPersona(idUser);
         if (persona != null) {
             request.getSession().setAttribute("persona", persona);
+            return true;
         } else {
             return false;
         }
-
-        return true;
     }
 
     private void establecerProyectos(HttpServletRequest request) {
@@ -62,12 +54,16 @@ public class DashboardController extends HttpServlet {
         request.setAttribute("proyectos", proyectos);
     }
 
-    // Métodos que se pueden sobrescribir en las pruebas
     protected PersonaDAO getPersonaDAO() {
         return new PersonaDAO();
     }
 
     protected ProyectoDAO getProyectoDAO() {
         return new ProyectoDAO();
+    }
+
+    // Public method for testing purposes
+    public void handleRequestForTest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
 }
