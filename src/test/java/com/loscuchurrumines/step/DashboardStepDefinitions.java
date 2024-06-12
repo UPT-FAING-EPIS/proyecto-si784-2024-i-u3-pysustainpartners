@@ -23,7 +23,9 @@ import javax.servlet.http.HttpSession;
 
 public class DashboardStepDefinitions {
 
-    private static final Logger logger = Logger.getLogger(DashboardStepDefinitions.class.getName());
+    private static final Logger logger = Logger.getLogger(
+        DashboardStepDefinitions.class.getName()
+    );
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpSession session;
@@ -49,7 +51,9 @@ public class DashboardStepDefinitions {
         requestDispatcher = mock(RequestDispatcher.class);
 
         when(request.getSession()).thenReturn(session);
-        when(request.getRequestDispatcher("Views/Dashboard/dashboard.jsp")).thenReturn(requestDispatcher);
+        when(
+            request.getRequestDispatcher("Views/Dashboard/dashboard.jsp")
+        ).thenReturn(requestDispatcher);
 
         // Mocking PersonaDAO behavior
         Persona persona = new Persona();
@@ -58,7 +62,15 @@ public class DashboardStepDefinitions {
 
         // Mocking ProyectoDAO behavior
         proyectos = new ArrayList<>();
-        Proyecto testeo = new Proyecto(1, "Proyecto 1", "Descripción 1", "Objetivo 1", 1, 1, 1);
+        Proyecto testeo = new Proyecto(
+            1,
+            "Proyecto 1",
+            "Descripción 1",
+            "Objetivo 1",
+            1,
+            1,
+            1
+        );
         proyectos.add(testeo);
         when(proyectoDAO.obtenerProyectos()).thenReturn(proyectos);
     }
@@ -68,13 +80,13 @@ public class DashboardStepDefinitions {
         logger.info("Executing Given step");
 
         authenticatedUser.setIdUser(idUser);
-        when(request.getSession().getAttribute("persona")).thenReturn(authenticatedUser);
+        when(request.getSession().getAttribute("persona")).thenReturn(
+            authenticatedUser
+        );
         // Update PersonaDAO mock behavior for the given user ID
         Persona persona = new Persona();
         persona.setIdPersona(1);
         when(personaDAO.obtenerPersona(idUser)).thenReturn(persona);
-
-        
     }
 
     @When("the user requests the dashboard page")
@@ -94,21 +106,36 @@ public class DashboardStepDefinitions {
         };
         dashboardController.handleRequestForTest(request, response);
 
-        usuarioEstablecido = (request.getSession().getAttribute("persona") != null);
+        usuarioEstablecido = (request.getSession().getAttribute("persona") !=
+            null);
     }
 
     @Then("the user's details are set in the session")
     public void the_user_s_details_are_set_in_the_session() {
         logger.info("Executing Then step");
-        assertTrue("La persona debería estar establecida en la sesión", usuarioEstablecido);
+        assertTrue(
+            "La persona debería estar establecida en la sesión",
+            usuarioEstablecido
+        );
     }
 
     @Then("the projects are retrieved and set in the request")
     public void the_projects_are_retrieved_and_set_in_the_request() {
-        Proyecto testeo = new Proyecto(1, "Proyecto 1", "Descripción 1", "Objetivo 1", 1, 1, 1);
+        Proyecto testeo = new Proyecto(
+            1,
+            "Proyecto 1",
+            "Descripción 1",
+            "Objetivo 1",
+            1,
+            1,
+            1
+        );
         proyectos.add(testeo);
         logger.info("Executing Then step");
         assertNotNull("Los proyectos no deberían ser nulos", proyectos);
-        assertFalse("La lista de proyectos no debería estar vacía", proyectos.isEmpty());
+        assertFalse(
+            "La lista de proyectos no debería estar vacía",
+            proyectos.isEmpty()
+        );
     }
 }

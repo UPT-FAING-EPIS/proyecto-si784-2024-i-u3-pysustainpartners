@@ -119,4 +119,24 @@ public class PersonaController extends HttpServlet {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }
     }
+
+    // Public method for testing purposes
+    public void handleGetForTest(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    // Public method for testing purposes
+    public void handlePostForTest(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    protected PersonaDAO getPersonaDAO() {
+        return new PersonaDAO();
+    }
 }

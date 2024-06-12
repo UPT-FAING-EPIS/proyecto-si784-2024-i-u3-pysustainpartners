@@ -41,4 +41,16 @@ public class SearchBarController extends HttpServlet {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }
     }
+
+    // Public method for testing purposes
+    public void handleGetForTest(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    protected ProyectoDAO getProyectoDAO() {
+        return new ProyectoDAO();
+    }
 }

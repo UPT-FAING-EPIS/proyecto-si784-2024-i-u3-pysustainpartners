@@ -12,22 +12,28 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/logout")
 public class LogoutController extends HttpServlet {
 
+    private static final Logger LOGGER = Logger.getLogger(
+        LogoutController.class.getName()
+    );
+
     @Override
-    protected void doGet(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
         try {
             request.getSession().invalidate();
             request
                 .getRequestDispatcher("Views/Login/login.jsp")
                 .forward(request, response);
         } catch (IOException | ServletException e) {
-            Logger.getLogger(LogoutController.class.getName()).log(
-                Level.SEVERE,
-                "Exception caught in doGet method",
-                e
-            );
+            LOGGER.log(Level.SEVERE, "Exception caught in doGet method", e);
         }
+    }
+
+    // Public method for testing purposes
+    public void handleRequestForTest(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        doGet(request, response);
     }
 }
