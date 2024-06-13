@@ -86,7 +86,7 @@ public class LoginController extends HttpServlet {
         return new UsuarioDAO();
     }
 
-    public static boolean verify(String gRecaptchaResponse, String secretKey) {
+    public boolean verify(String gRecaptchaResponse, String secretKey) {
         if (gRecaptchaResponse == null || gRecaptchaResponse.isEmpty()) {
             return false;
         }
