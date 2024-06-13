@@ -30,7 +30,7 @@
             <version>3.9.0</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
@@ -115,9 +115,6 @@
                     <goals>
                         <goal>sonar</goal>
                     </goals>
-                    <configuration>
-                        <sonar.exclusions>com/loscuchurrumines/controller/**</sonar.exclusions>
-                    </configuration>
                 </execution>
             </executions>
             </plugin>

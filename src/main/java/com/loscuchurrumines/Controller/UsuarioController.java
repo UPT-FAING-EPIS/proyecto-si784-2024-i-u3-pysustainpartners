@@ -24,23 +24,8 @@ public class UsuarioController extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        handleGet(request, response);
-    }
-
-    @Override
-    protected void doPost(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws ServletException, IOException {
-        handlePost(request, response);
-    }
-
-    protected void handleGet(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws ServletException, IOException {
         try {
-            UsuarioDAO usuarioDAO = getUsuarioDAO();
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
             String query = request.getParameter("query");
             if (query != null && !query.isEmpty()) {
                 List<Usuario> usuarios = usuarioDAO.searchUsuarios(query);
@@ -57,12 +42,13 @@ public class UsuarioController extends HttpServlet {
         }
     }
 
-    protected void handlePost(
+    @Override
+    protected void doPost(
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
         try {
-            UsuarioDAO usuarioDAO = getUsuarioDAO();
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
             String action = request.getParameter("action");
             if ("changeRole".equals(action)) {
                 int userId = Integer.parseInt(request.getParameter("userId"));
@@ -75,9 +61,5 @@ public class UsuarioController extends HttpServlet {
         } catch (IOException | NumberFormatException e) {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }
-    }
-
-    protected UsuarioDAO getUsuarioDAO() {
-        return new UsuarioDAO();
     }
 }

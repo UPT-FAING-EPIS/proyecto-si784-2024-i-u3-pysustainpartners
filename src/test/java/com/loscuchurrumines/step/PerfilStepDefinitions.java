@@ -81,11 +81,8 @@ public class PerfilStepDefinitions {
         };
         perfilController.handleGetForTest(request, response);
 
-        verify(session).setAttribute(eq("proyectosUsuario"), any(List.class));
-        verify(session).setAttribute(
-            eq("cantidadParticipacionProyectos"),
-            eq(5)
-        );
+        verify(session).setAttribute("proyectosUsuario", any(List.class));
+        verify(session).setAttribute("cantidadParticipacionProyectos", 5);
         verify(requestDispatcher).forward(request, response);
     }
 

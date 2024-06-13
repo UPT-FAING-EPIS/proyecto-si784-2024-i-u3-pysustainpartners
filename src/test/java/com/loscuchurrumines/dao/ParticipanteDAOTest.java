@@ -52,7 +52,8 @@ public class ParticipanteDAOTest {
         int monto = 100;
 
         when(mockConnection.prepareStatement(anyString())).thenReturn(
-                mockStatement);
+            mockStatement
+        );
         when(mockStatement.executeUpdate()).thenReturn(1);
 
         // act es decir ejecucion de la prueba
@@ -122,17 +123,19 @@ public class ParticipanteDAOTest {
 
         ParticipanteDAO spyParticipanteDAO = spy(participanteDAO);
         doReturn(true)
-                .when(spyParticipanteDAO)
-                .insertarMetodo(anyString(), eq(participante));
+            .when(spyParticipanteDAO)
+            .insertarMetodo(anyString(), eq(participante));
 
         boolean result = spyParticipanteDAO.crearParticipante(
-                participante,
-                100);
+            participante,
+            100
+        );
 
         assertTrue(result);
         verify(spyParticipanteDAO, times(1)).insertarMetodo(
-                anyString(),
-                eq(participante));
+            anyString(),
+            eq(participante)
+        );
     }
 
     @Test
@@ -144,9 +147,11 @@ public class ParticipanteDAOTest {
         int monto = 100;
 
         when(mockConnection.prepareStatement(anyString())).thenReturn(
-                mockStatement);
+            mockStatement
+        );
         when(mockStatement.executeUpdate()).thenThrow(
-                new RuntimeException("Database error"));
+            new RuntimeException("Database error")
+        );
 
         boolean result = participanteDAO.crearParticipante(participante, monto);
 
@@ -164,7 +169,8 @@ public class ParticipanteDAOTest {
         participante.setFkUser(1);
         participante.setFkRol(2);
         participante.setFkProyecto(1);
-        String query = "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
+        String query =
+            "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
@@ -184,11 +190,13 @@ public class ParticipanteDAOTest {
         participante.setFkUser(1);
         participante.setFkRol(2);
         participante.setFkProyecto(1);
-        String query = "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
+        String query =
+            "INSERT INTO tbparticipante (fkuser, fkrol, fkproyecto) VALUES (?,?,?)";
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenThrow(
-                new RuntimeException("Database error"));
+            new RuntimeException("Database error")
+        );
 
         boolean result = participanteDAO.insertarMetodo(query, participante);
 
