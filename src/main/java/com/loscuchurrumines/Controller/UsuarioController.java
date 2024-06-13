@@ -62,4 +62,12 @@ public class UsuarioController extends HttpServlet {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }
     }
+
+    public void handleGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    public void handlePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
 }
