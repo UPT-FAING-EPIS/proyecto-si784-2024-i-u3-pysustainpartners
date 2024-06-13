@@ -67,7 +67,6 @@ public class PerfilController extends HttpServlet {
         }
     }
 
-    // Public method for testing purposes
     public void handleGetForTest(
         HttpServletRequest request,
         HttpServletResponse response
