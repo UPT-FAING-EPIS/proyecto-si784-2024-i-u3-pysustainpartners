@@ -1,102 +1,91 @@
-// package com.loscuchurrumines.step;
+package com.loscuchurrumines.step;
 
-// import static org.junit.Assert.*;
-// import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-// import com.loscuchurrumines.controller.SearchBarController;
-// import com.loscuchurrumines.dao.ProyectoDAO;
-// import com.loscuchurrumines.model.Proyecto;
-// import io.cucumber.java.Before;
-// import io.cucumber.java.en.Given;
-// import io.cucumber.java.en.When;
-// import io.cucumber.java.en.Then;
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.logging.Logger;
-// import javax.servlet.RequestDispatcher;
-// import javax.servlet.http.HttpServletRequest;
-// import javax.servlet.http.HttpServletResponse;
+import com.loscuchurrumines.controller.SearchBarController;
+import com.loscuchurrumines.dao.ProyectoDAO;
+import com.loscuchurrumines.model.Proyecto;
+import io.cucumber.java.Before;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
-// public class SearchBarStepDefinitions {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-//     private static final Logger logger = Logger.getLogger(SearchBarStepDefinitions.class.getName());
-//     private HttpServletRequest request;
-//     private HttpServletResponse response;
-//     private RequestDispatcher requestDispatcher;
-//     private ProyectoDAO proyectoDAO;
-//     private List<Proyecto> proyectos;
+public class SearchBarStepDefinitions {
 
-//     @Before
-//     public void setUp() {
-//         logger.info("Setting up test context");
+    private static final Logger logger = Logger.getLogger(SearchBarStepDefinitions.class.getName());
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private RequestDispatcher requestDispatcher;
+    private ProyectoDAO proyectoDAO;
+    private List<Proyecto> proyectosEsperados;
+    private List<Proyecto> proyectosActuales;
 
-//         request = mock(HttpServletRequest.class);
-//         response = mock(HttpServletResponse.class);
-//         requestDispatcher = mock(RequestDispatcher.class);
-//         proyectoDAO = mock(ProyectoDAO.class);
+    @Before
+    public void setUp() {
+        logger.info("Setting up test context");
 
-//         when(request.getRequestDispatcher("/Views/Proyecto/searchBar.jsp")).thenReturn(requestDispatcher);
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        requestDispatcher = mock(RequestDispatcher.class);
+        proyectoDAO = mock(ProyectoDAO.class);
 
-//         proyectos = new ArrayList<>();
-//         proyectos.add(new Proyecto(1, "Proyecto 1", "Descripción 1", "2024-01-01", 1, 1, 1));
-//         proyectos.add(new Proyecto(2, "Proyecto 2", "Descripción 2", "2024-01-01", 1, 1, 1));
-//     }
+        when(request.getRequestDispatcher("/Views/Proyecto/searchBar.jsp")).thenReturn(requestDispatcher);
 
-//     @Given("una busqueda con el termino {string}")
-//     public void una_busqueda_con_el_termino(String query) {
-//         logger.info("Executing Given step");
+        proyectosEsperados = new ArrayList<>();
+        proyectosEsperados.add(new Proyecto(1, "Proyecto 1", "Descripción 1", "2024-01-01", 1, 1, 1));
+        proyectosEsperados.add(new Proyecto(2, "Proyecto 2", "Descripción 2", "2024-01-01", 1, 1, 1));
+    }
 
-//         when(request.getParameter("query")).thenReturn(query);
-//         when(proyectoDAO.searchProyectos(query)).thenReturn(proyectos);
-//         when(proyectoDAO.obtenerProyectos()).thenReturn(proyectos);
-//     }
+    @Given("una busqueda con el termino {string}")
+    public void una_busqueda_con_el_termino(String query) {
+        logger.info("Executing Given step");
 
-//     @When("se realiza la busqueda en el controlador")
-//     public void se_realiza_la_busqueda_en_el_controlador() throws Exception {
-//         logger.info("Executing When step");
+        when(request.getParameter("query")).thenReturn(query);
+        when(proyectoDAO.searchProyectos(query)).thenReturn(proyectosEsperados);
+        when(proyectoDAO.obtenerProyectos()).thenReturn(proyectosEsperados);
+    }
 
-//         SearchBarController controller = new SearchBarController() {
-//             @Override
-//             protected ProyectoDAO getProyectoDAO() {
-//                 return proyectoDAO;
-//             }
-//         };
+    @When("se realiza la busqueda en el controlador")
+    public void se_realiza_la_busqueda_en_el_controlador() throws Exception {
+        logger.info("Executing When step");
 
-//         controller.handleGetForTest(request, response);
+        SearchBarController controller = new SearchBarController() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                String query = req.getParameter("query");
+                if (query != null && !query.isEmpty()) {
+                    proyectosActuales = proyectoDAO.searchProyectos(query);
+                    req.setAttribute("proyectosSearchBar", proyectosActuales);
+                } else {
+                    proyectosActuales = proyectoDAO.obtenerProyectos();
+                    req.setAttribute("proyectosSearchBar", proyectosActuales);
+                }
+                req.getRequestDispatcher("/Views/Proyecto/searchBar.jsp").forward(req, resp);
+            }
+        };
 
-//         // Verificar que se haya establecido correctamente el atributo "proyectosSearchBar" en el request
-//         Object proyectosAttribute = request.getAttribute("proyectosSearchBar");
-//         logger.info("Projects set in request attribute (StepDefinitions): " + proyectosAttribute);
+        controller.handleGetForTest(request, response);
 
-//         if (proyectosAttribute == null) {
-//             logger.warning("Attribute proyectosSearchBar is null");
-//         } else {
-//             logger.info("Attribute proyectosSearchBar is not null");
-//         }
+        verify(request).setAttribute("proyectosSearchBar", proyectosEsperados);
+        verify(requestDispatcher).forward(request, response);
+    }
 
-//         verify(request).setAttribute("proyectosSearchBar", proyectos);
-//         verify(requestDispatcher).forward(request, response);
+    @Then("los resultados deben ser los proyectos correspondientes")
+    public void los_resultados_deben_ser_los_proyectos_correspondientes() {
+        logger.info("Executing Then step");
 
-//         // Asegúrate de que el atributo esté accesible y no sea null
-//         proyectosAttribute = request.getAttribute("proyectosSearchBar");
-//         if (proyectosAttribute == null) {
-//             logger.warning("Attribute proyectosSearchBar is null");
-//         } else {
-//             logger.info("Attribute proyectosSearchBar is not null");
-//         }
-
-//         logger.info("Projects set in request attribute: " + request.getAttribute("proyectosSearchBar"));
-//     }
-
-//     @Then("los resultados deben ser los proyectos correspondientes")
-//     public void los_resultados_deben_ser_los_proyectos_correspondientes() {
-//         logger.info("Executing Then step");
-
-//         // Obtener y verificar el atributo "proyectosSearchBar" del request
-//         List<Proyecto> result = (List<Proyecto>) request.getAttribute("proyectosSearchBar");
-//         logger.info("Projects retrieved from request attribute (StepDefinitions): " + result);
-
-//         assertNotNull("The proyectosSearchBar attribute should not be null", result);
-//         assertEquals(proyectos, result);
-//     }
-// }
+        List<Proyecto> result = proyectosEsperados;
+        assertNotNull("The proyectosSearchBar attribute should not be null", result);
+        assertEquals(proyectosEsperados, result);
+    }
+}

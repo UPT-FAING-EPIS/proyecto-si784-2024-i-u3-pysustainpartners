@@ -49,8 +49,4 @@ public class SearchBarController extends HttpServlet {
     ) throws ServletException, IOException {
         doGet(request, response);
     }
-
-    protected ProyectoDAO getProyectoDAO() {
-        return new ProyectoDAO();
-    }
 }
