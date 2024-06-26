@@ -25,6 +25,12 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven
+      - name: Crear .env
+        run: |
+          echo "DATABASE_URL=jdbc:postgresql://ep-small-haze-88087949.us-east-2.aws.neon.tech/dbSustainPartners" > .env
+          echo "DATABASE_USER=ximena-ortiz" > .env
+          echo "DATABASE_PASSWORD=neq9Gm5awICO" > .env
+          echo "RECAPTCH_PRIVATE_KEY=6LfVXgspAAAAAFOIm5PqiXZqbtYibfKzGNDlUOCx" > .env
       - name: Instalar Dependencias  y correr Tests
         run: mvn clean test jacoco:report
       - name: Subir Reporte de Cobertura
