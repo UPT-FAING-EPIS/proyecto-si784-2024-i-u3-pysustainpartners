@@ -31,6 +31,7 @@ jobs:
           echo "DATABASE_USER=ximena-ortiz" > .env
           echo "DATABASE_PASSWORD=neq9Gm5awICO" > .env
           echo "RECAPTCH_PRIVATE_KEY=6LfVXgspAAAAAFOIm5PqiXZqbtYibfKzGNDlUOCx" > .env
+          cat .env
       - name: Instalar Dependencias  y correr Tests
         run: mvn clean test jacoco:report
       - name: Subir Reporte de Cobertura
