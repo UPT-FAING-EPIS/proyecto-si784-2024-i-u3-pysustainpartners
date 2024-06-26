@@ -1,0 +1,40 @@
+name: Correr Pruebas
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "17"
+      - name: Configurar Cache Maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+      - name: Instalar Dependencias  y correr Tests
+        run: mvn clean test jacoco:report
+      - name: Subir Reporte de Cobertura
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: target/site/index.html
+      - name: Subir Reporte de Tests
+        uses: actions/upload-artifact@v2
+        with:
+          name: tests
+          path: target/cucumber-reports.html
+        
