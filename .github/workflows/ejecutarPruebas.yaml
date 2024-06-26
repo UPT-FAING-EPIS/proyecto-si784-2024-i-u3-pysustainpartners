@@ -34,12 +34,12 @@ jobs:
       - name: Instalar Dependencias  y correr Tests
         run: mvn clean test jacoco:report
       - name: Subir Reporte de Cobertura
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: unit-tests-report
           path: target/site/jacoco/index.html
       - name: Subir Reporte de Tests
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cucumber-tests-report
           path: target/cucumber-reports.html
