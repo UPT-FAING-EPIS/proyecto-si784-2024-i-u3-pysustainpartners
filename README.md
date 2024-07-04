@@ -7,6 +7,7 @@ Este proyecto está configurado para generar reportes de tests tanto de Cucumber
 Para generar los reportes de tests, ejecuta el siguiente comando Maven:
 
 
+
 ```sh
 mvn clean test jacoco:report
 ```
