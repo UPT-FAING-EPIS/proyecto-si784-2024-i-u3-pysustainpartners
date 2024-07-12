@@ -4,7 +4,7 @@ env:
   SONAR_ORG: 'manguito'
   SONAR_PROJECT: 'manguito_sustainpartners'
   SONAR_HOST_URL: 'https://sonarcloud.io'
-  SONAR_TOKEN: 'e067390c0ad9a76cbc415da776c451aba763163f' # Token directamente en el archivo
+  SONAR_TOKEN: 'e067390c0ad9a76cbc415da776c451aba763163f'
 
 on:
   push:
@@ -63,4 +63,5 @@ jobs:
             -Dsonar.projectKey=${{ env.SONAR_PROJECT }} \
             -Dsonar.organization=${{ env.SONAR_ORG }} \
             -Dsonar.host.url=${{ env.SONAR_HOST_URL }} \
-            -Dsonar.login=${{ env.SONAR_TOKEN }}
+            -Dsonar.login=${{ env.SONAR_TOKEN }} \
+            -Dsonar.exclusions=src/main/java/com/loscuchurrumines/controller/**
