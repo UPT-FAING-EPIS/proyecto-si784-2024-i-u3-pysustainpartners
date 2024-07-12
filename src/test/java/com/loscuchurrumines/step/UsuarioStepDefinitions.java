@@ -65,8 +65,8 @@ public class UsuarioStepDefinitions {
             @Override
             public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
                 String query = request.getParameter("query");
-                List<Usuario> usuarios = usuarioDAO.searchUsuarios(query != null ? query : "");
-                request.setAttribute("usuariosSearch", usuarios);
+                List<Usuario> usuariosResult = usuarioDAO.searchUsuarios(query != null ? query : "");
+                request.setAttribute("usuariosSearch", usuariosResult);
                 request.getRequestDispatcher("/Views/Usuario/listarUsuarios.jsp").forward(request, response);
             }
         };
