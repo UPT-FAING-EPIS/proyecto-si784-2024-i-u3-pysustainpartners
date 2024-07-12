@@ -39,7 +39,12 @@
     <div class="container mx-auto px-4 sm:px-10 py-6">
         <!-- Header -->
         <div class="flex justify-between items-center mb-10">
-            <button class="flex items-center space-x-4 cursor-pointer" onclick="location.href='perfil'" role="button">
+                    <button 
+            class="flex items-center space-x-4 cursor-pointer" 
+            onclick="location.href='perfil'" 
+            onKeyPress="if(event.key === 'Enter') location.href='perfil'"
+            role="button"
+        >
                 <img alt="personalogeada" src="<%= personaActual.getFotoPersona() %>" class="rounded-full w-10 h-10">
                 <span class="hidden sm:block text-black text-sm font-semibold font-['Inter'] uppercase leading-snug tracking-wider">Ver perfil</span>
             </button>
