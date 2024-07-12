@@ -20,7 +20,7 @@
 <body class="bg-gray-100 font-['Newsreader']">
     <div class="container mx-auto px-10 py-6">
     <button class="bg-green-500 text-white px-8 py-2 rounded-full" onclick = "location.href='dashboard'">Volver al Inicio</button><br>
-        <form action="/participar?id=<%=request.getParameter("id")%>" method="post" class="bg-white p-6 rounded-lg shadow-lg space-y-4">
+        <form action="/participar?id=<%= org.apache.commons.text.StringEscapeUtils.escapeHtml4(request.getParameter("id")) %>" method="post">
             <div class="form-group">
                 <span class="block text-gray-700 font-semibold">¿Cómo desea contribuir?</span> <br>
                 <% 
