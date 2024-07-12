@@ -73,7 +73,6 @@ public class ProyectoDAOTest {
         int idProyecto = 1;
         String query =
             "SELECT idproyecto,nombre,descripcion,objetivo,foto,estado,fkregion,fkuser,fkfondo FROM tbproyecto WHERE idproyecto = ?";
-        //String key = "proyecto:" + idProyecto;
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
@@ -172,7 +171,6 @@ public class ProyectoDAOTest {
         int idProyecto = 1;
         String query =
             "SELECT fkrol, COUNT(*) as cantidad FROM tbparticipante WHERE fkproyecto = ? AND (fkrol = 1 OR fkrol = 2) GROUP BY fkrol";
-        //String key = "donadoresVoluntarios:" + idProyecto;
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
@@ -315,7 +313,6 @@ public class ProyectoDAOTest {
         int idProyecto = 1;
         String query =
             "SELECT fkcategoria FROM tbproyecto_categoria WHERE fkproyecto = ?";
-        //String key = "categoriasProyecto:" + idProyecto;
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
@@ -435,7 +432,6 @@ public class ProyectoDAOTest {
         int idProyecto = 1;
         String query =
             "SELECT idproyecto,nombre,descripcion,objetivo,foto,estado,fkregion,fkuser,fkfondo FROM tbproyecto WHERE idproyecto = ?";
-        //String key = "proyecto:" + idProyecto;
 
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenThrow(

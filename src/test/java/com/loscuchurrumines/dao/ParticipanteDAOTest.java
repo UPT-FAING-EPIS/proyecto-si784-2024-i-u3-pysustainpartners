@@ -32,7 +32,6 @@ public class ParticipanteDAOTest {
 
     private ParticipanteDAO participanteDAO;
 
-    // before set up para abrir conexiones
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
@@ -43,7 +42,7 @@ public class ParticipanteDAOTest {
 
     @Test
     public void testCrearParticipanteConFkRol1() throws Exception {
-        // arrange es decir preparacion de valores
+
         Participante participante = new Participante();
         participante.setFkUser(1);
         participante.setFkRol(1);
@@ -55,10 +54,8 @@ public class ParticipanteDAOTest {
         );
         when(mockStatement.executeUpdate()).thenReturn(1);
 
-        // act es decir ejecucion de la prueba
         boolean result = participanteDAO.crearParticipante(participante, monto);
 
-        // assert es decir verificacion de resultados
         assertTrue(result);
         verify(mockStatement, times(1)).setInt(1, participante.getFkUser());
         verify(mockStatement, times(1)).setInt(2, participante.getFkRol());

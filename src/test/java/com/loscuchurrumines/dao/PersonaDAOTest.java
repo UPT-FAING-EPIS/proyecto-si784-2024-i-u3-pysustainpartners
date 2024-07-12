@@ -76,7 +76,7 @@ public class PersonaDAOTest {
         persona.setNombre("Juan");
         persona.setApellido("Perez");
         persona.setCelular("123456789");
-        persona.setFechaNacimiento("2010-01-01"); // Fecha de nacimiento que hace que la persona sea menor de 18 años
+        persona.setFechaNacimiento("2010-01-01");
         persona.setSexo("M");
         persona.setFkUser(1);
 
@@ -129,7 +129,6 @@ public class PersonaDAOTest {
 
     @Test
     public void testObtenerPersonas() throws Exception {
-        //List<Persona> personas = new ArrayList<>();
         when(mockConnection.prepareStatement(anyString())).thenReturn(
             mockStatement
         );

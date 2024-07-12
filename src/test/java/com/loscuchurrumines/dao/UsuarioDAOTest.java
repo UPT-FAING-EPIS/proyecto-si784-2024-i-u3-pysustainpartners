@@ -219,13 +219,11 @@ public class UsuarioDAOTest {
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
 
-        // Simulate two rows in the result set
         when(mockResultSet.next())
             .thenReturn(true)
             .thenReturn(true)
             .thenReturn(false);
 
-        // First user
         when(mockResultSet.getInt("iduser")).thenReturn(1).thenReturn(2);
         when(mockResultSet.getString("username"))
             .thenReturn("testuser1")
@@ -275,13 +273,11 @@ public class UsuarioDAOTest {
         when(mockConnection.prepareStatement(query)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
 
-        // Simulate two rows in the result set
         when(mockResultSet.next())
             .thenReturn(true)
             .thenReturn(true)
             .thenReturn(false);
-
-        // First user
+            
         when(mockResultSet.getInt("iduser")).thenReturn(1).thenReturn(2);
         when(mockResultSet.getString("username"))
             .thenReturn("testuser1")
