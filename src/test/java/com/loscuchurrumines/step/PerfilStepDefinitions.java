@@ -83,10 +83,10 @@ public class PerfilStepDefinitions {
         proyectosActuales = proyectosEsperados;
         session.setAttribute("proyectosUsuario", proyectosActuales);
         session.setAttribute("cantidadParticipacionProyectos", 5);
-
-        verify(session).setAttribute(eq("proyectosUsuario"), eq(proyectosActuales));
-        verify(session).setAttribute(eq("cantidadParticipacionProyectos"), eq(5));
-        verify(requestDispatcher).forward(request, response);
+        
+        verify(session).setAttribute("proyectosUsuario", proyectosActuales);
+        verify(session).setAttribute("cantidadParticipacionProyectos", 5);
+        verify(requestDispatcher).forward(request, response);        
     }
 
     @Then("the user's projects are retrieved and set in the session")

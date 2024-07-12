@@ -33,7 +33,7 @@ public class ParticipanteDAOTest {
     private ParticipanteDAO participanteDAO;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
         PowerMockito.mockStatic(NeonConnection.class);
         when(NeonConnection.getConnection()).thenReturn(mockConnection);
@@ -111,7 +111,7 @@ public class ParticipanteDAOTest {
     }
 
     @Test
-    public void testCrearParticipanteConFkRolNo1() throws Exception {
+    public void testCrearParticipanteConFkRolNo1() {
         Participante participante = new Participante();
         participante.setFkUser(1);
         participante.setFkRol(2);

@@ -61,7 +61,7 @@ public class ProyectoStepDefinitions {
     }
 
     @Then("el proyecto debe ser creado exitosamente")
-    public void el_proyecto_debe_ser_creado_exitosamente() throws IOException {
+    public void el_proyecto_debe_ser_creado_exitosamente() {
         logger.info("Then: Verificando si el proyecto fue creado exitosamente");
         assertTrue(resultado, "El proyecto no fue creado exitosamente");
         logger.info("El proyecto fue creado exitosamente");

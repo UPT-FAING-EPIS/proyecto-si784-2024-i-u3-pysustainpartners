@@ -43,7 +43,6 @@
             class="flex items-center space-x-4 cursor-pointer" 
             onclick="location.href='perfil'" 
             onKeyPress="if(event.key === 'Enter') location.href='perfil'"
-            role="button"
         >
                 <img alt="personalogeada" src="<%= personaActual.getFotoPersona() %>" class="rounded-full w-10 h-10">
                 <span class="hidden sm:block text-black text-sm font-semibold font-['Inter'] uppercase leading-snug tracking-wider">Ver perfil</span>

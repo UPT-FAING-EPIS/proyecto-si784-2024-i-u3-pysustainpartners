@@ -41,7 +41,7 @@ public class ProyectoDAOTest {
     private ProyectoDAO proyectoDAO;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
         PowerMockito.mockStatic(NeonConnection.class);
         when(NeonConnection.getConnection()).thenReturn(mockConnection);
