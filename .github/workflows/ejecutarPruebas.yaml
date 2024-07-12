@@ -65,3 +65,5 @@ jobs:
             -Dsonar.host.url=${{ env.SONAR_HOST_URL }} \
             -Dsonar.login=${{ env.SONAR_TOKEN }} \
             -Dsonar.exclusions=src/main/java/com/loscuchurrumines/controller/**
+
+            
