@@ -3,6 +3,9 @@
 
 Este proyecto está configurado para generar reportes de tests tanto de Cucumber como de cobertura de tests unitarios.
 
+## Link del video publicado en YouTube
+https://youtu.be/C8y1bsTbU1I
+
 ## Generar Reportes de Tests
 
 Para generar los reportes de tests, ejecuta el siguiente comando Maven:
