@@ -1,4 +1,4 @@
-# Proyecto Calidad Unidad II
+# Proyecto Calidad 
 
 Este proyecto está configurado para generar reportes de tests tanto de Cucumber como de cobertura de tests unitarios.
 
