@@ -1,5 +1,6 @@
 package com.loscuchurrumines.model;
 
+
 public class Participante {
 
     private int idParticipante;
