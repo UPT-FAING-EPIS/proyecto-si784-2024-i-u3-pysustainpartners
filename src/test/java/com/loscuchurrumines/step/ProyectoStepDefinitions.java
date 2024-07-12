@@ -2,12 +2,9 @@ package com.loscuchurrumines.step;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
 
 import com.loscuchurrumines.dao.ProyectoDAO;
 import com.loscuchurrumines.model.Proyecto;
@@ -54,7 +51,7 @@ public class ProyectoStepDefinitions {
     }
 
     @When("el usuario crea un nuevo proyecto")
-    public void el_usuario_crea_un_nuevo_proyecto() throws ServletException, IOException {
+    public void el_usuario_crea_un_nuevo_proyecto() {
         logger.info("When: Intentando crear un nuevo proyecto");
         resultado = proyectoDAO.crearProyecto(proyecto, monto, modalidades, categorias);
         logger.info("Resultado de la creación del proyecto: " + resultado);
