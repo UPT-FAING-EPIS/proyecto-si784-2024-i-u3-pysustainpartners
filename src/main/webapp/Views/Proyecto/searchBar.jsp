@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.loscuchurrumines.Model.Proyecto"%>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +26,7 @@
             <form action="" method="get" class="pr-6 w-full max-w-xl relative">
                 <input type="text" placeholder="Buscar proyecto..." name="query"
                     class=" border border-gray-300 rounded-md w-full px-6 py-2 focus:outline-none focus:ring focus:ring-green-200"
-                    value="<%=request.getParameter("query")%>">
+                    value="<%= StringEscapeUtils.escapeHtml4(request.getParameter("query")) %>">
 
             </form>
 
