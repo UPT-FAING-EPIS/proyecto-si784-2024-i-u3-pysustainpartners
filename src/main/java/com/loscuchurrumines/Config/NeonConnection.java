@@ -1,4 +1,4 @@
-package com.loscuchurrumines.config;
+package com.loscuchurrumines.Config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
