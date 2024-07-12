@@ -6,16 +6,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loscuchurrumines.config.NeonConnection;
 import com.loscuchurrumines.model.Persona;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -134,7 +129,7 @@ public class PersonaDAOTest {
 
     @Test
     public void testObtenerPersonas() throws Exception {
-        List<Persona> personas = new ArrayList<>();
+        //List<Persona> personas = new ArrayList<>();
         when(mockConnection.prepareStatement(anyString())).thenReturn(
             mockStatement
         );
